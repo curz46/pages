@@ -2,35 +2,25 @@ package me.dylancurzon.pages.elements.mutable;
 
 import com.sun.istack.internal.NotNull;
 import me.dylancurzon.pages.AlignedElement;
-import me.dylancurzon.pages.animation.Animation;
-import me.dylancurzon.pages.animation.QuarticEaseInAnimation;
 import me.dylancurzon.pages.elements.container.ImmutableContainer;
 import me.dylancurzon.pages.elements.container.Positioning;
 import me.dylancurzon.pages.util.Cached;
 import me.dylancurzon.pages.util.Spacing;
-import me.dylancurzon.pages.util.Vector2d;
 import me.dylancurzon.pages.util.Vector2i;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static me.dylancurzon.pages.elements.container.Positioning.*;
 
 public class MutableContainer extends MutableElement {
 
-    private static final double SCROLL_FACTOR = 8;
-
     private final ImmutableContainer container;
 
     private final List<MutableElement> elements;
     private final Cached<Map<MutableElement, Vector2i>> positions = new Cached<>();
-
-    protected double scroll;
-    protected double scrollVelocity;
-
-    private TransformHandler transform;
 
     private Color fillColor;
     private Color lineColor;
@@ -140,7 +130,7 @@ public class MutableContainer extends MutableElement {
                     .div(2)
                     .sub(elementSize.div(2))
                     .floor().toInt();
-                positions.put(mut, centered.sub(Vector2i.of(0, (int) scroll)));
+                positions.put(mut, centered);
             }
         } else {
             Spacing padding = container.getPadding();
@@ -160,7 +150,7 @@ public class MutableContainer extends MutableElement {
                 }
                 Vector2i elementSize = mut.getSize();
 
-                positions.put(mut, pos.sub(Vector2i.of(0, (int) scroll)));
+                positions.put(mut, pos);
 
                 if (container.getPositioning() == INLINE) {
                     pos = pos.add(Vector2i.of(mut.getMargin().getRight() + elementSize.getX(), 0));
@@ -173,26 +163,6 @@ public class MutableContainer extends MutableElement {
         return positions;
     }
 
-    @Override
-    public void tick() {
-        if (!container.isScrollable()) return;
-        double originalScroll = scroll;
-        scroll += scrollVelocity;
-        scrollVelocity *= 0.8;
-        checkBounds();
-        if (originalScroll != scroll) {
-            positions.clear();
-        }
-    }
-
-    public void scroll(double amount) {
-        if (!container.isScrollable()) return;
-        if (transform != null) {
-            transform = null;
-        }
-        scrollVelocity += amount * SCROLL_FACTOR;
-    }
-
     public Optional<Color> getFillColor() {
         return Optional.ofNullable(fillColor);
     }
@@ -203,74 +173,6 @@ public class MutableContainer extends MutableElement {
 
     public Optional<Integer> getLineWidth() {
         return Optional.ofNullable(lineWidth);
-    }
-
-    private void checkBounds() {
-        if ((scroll + 5) < 0) {
-            transform = new TransformHandler(
-                Vector2d.of(0, scroll),
-                Vector2d.of(0, 0),
-                new QuarticEaseInAnimation(0, 1, 20)
-            );
-        }
-        double max = getMaxScroll();
-        if ((scroll - 5) > max) {
-            transform = new TransformHandler(
-                Vector2d.of(0, scroll),
-                Vector2d.of(0, max),
-                new QuarticEaseInAnimation(0, 1, 20)
-            );
-        }
-
-        if (transform != null) {
-            transform.tick();
-            scroll = transform.getPosition().getY();
-        }
-    }
-
-    private double getMaxScroll() {
-        Vector2i size = Vector2i.of(
-            0,
-            0
-        );
-        for (MutableElement mut : elements) {
-            Vector2i elementSize = mut.getSize()
-                .add(Vector2i.of(
-                    mut.getMargin().getLeft() + mut.getMargin().getRight(),
-                    mut.getMargin().getBottom() + mut.getMargin().getTop()
-                ));
-            size = size.add(Vector2i.of(0, elementSize.getY()));
-        }
-        return size.getY() - container.getPaddedSize().getY();
-    }
-
-    public static class TransformHandler {
-
-        private final Vector2d initialPosition;
-        private final Vector2d destination;
-        private final Animation animation;
-
-        public TransformHandler(Vector2d initialPosition, Vector2d destination,
-                                Animation animation) {
-            this.initialPosition = initialPosition;
-            this.destination = destination;
-            this.animation = animation;
-        }
-
-        public void tick() {
-            animation.tick();
-        }
-
-        public Vector2d getPosition() {
-            double progress = animation.determineValue();
-            Vector2d delta = destination.sub(initialPosition).mul(progress);
-            return initialPosition.add(delta);
-        }
-
-        public boolean isCompleted() {
-            return animation.isCompleted();
-        }
-
     }
 
 }

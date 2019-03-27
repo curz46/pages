@@ -58,7 +58,7 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
         int total = elements.stream()
             .map(Pair::getKey).mapToInt(Integer::intValue).sum();
         List<ImmutableElement> wrappedElements = elements.stream()
-            .map(pair -> ImmutableContainer.builder()
+            .map(pair -> DefaultImmutableContainer.builder()
                 .setCentering(centering)
                 .setSize((positioning == INLINE
                     ? size.toDouble().mul(Vector2d.of(((double) pair.getKey()) / total, 1))
@@ -67,7 +67,7 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
                 .add(pair.getValue())
                 .build())
             .collect(Collectors.toList());
-        return ImmutableContainer.builder()
+        return DefaultImmutableContainer.builder()
             .setSize(size)
             .setPadding(padding)
             .setPositioning(positioning)
@@ -118,12 +118,6 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
     @Override
     public Positioning getPositioning() {
         return positioning;
-    }
-
-    @Override
-    @NotNull
-    public boolean isScrollable() {
-        return scrollable;
     }
 
     @Override

@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 @Immutable
 public class DefaultImmutableContainer extends ImmutableElement implements ImmutableContainer {
 
-    public static boolean DEBUG = false;
-
     protected final List<Function<ImmutableContainer, ImmutableElement>> elements;
     protected final Vector2i size;
     protected final Spacing padding;
@@ -29,6 +27,10 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
     protected final Color fillColor;
     private final Color lineColor;
     private final Integer lineWidth;
+
+    public static Builder builder() {
+        return new ContainerBuilder();
+    }
 
     protected DefaultImmutableContainer(Builder builder) {
         super(builder);
@@ -91,11 +93,6 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
                 padding.getBottom() + padding.getTop()
             )
         );
-    }
-
-    @Override
-    public boolean isScrollable() {
-        return scrollable;
     }
 
     @Override

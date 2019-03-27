@@ -41,8 +41,6 @@ public abstract class MutableElement {
         return parent;
     }
 
-    public void tick() {}
-
     public Vector2i getSize() {
         return cachedSize.get()
             .orElseGet(() -> {

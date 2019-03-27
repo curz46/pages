@@ -9,10 +9,6 @@ import java.util.Optional;
 
 public interface ImmutableContainer {
 
-    static DefaultImmutableContainer.ContainerBuilder builder() {
-        return new DefaultImmutableContainer.ContainerBuilder();
-    }
-
     @NotNull
     Spacing getMargin();
 
@@ -33,9 +29,6 @@ public interface ImmutableContainer {
 
     @NotNull
     Positioning getPositioning();
-
-    @NotNull
-    boolean isScrollable();
 
     @NotNull
     Optional<Color> getFillColor();
