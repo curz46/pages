@@ -1,20 +1,30 @@
 package me.dylancurzon.pages.element;
 
 import me.dylancurzon.pages.element.container.MutableContainer;
-import me.dylancurzon.pages.util.Cached;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 
 public abstract class MutableElement {
 
     protected final Spacing margin;
-
     protected MutableContainer parent;
 
-    private final Cached<Vector2i> cachedSize = new Cached<>();
-
-    protected MutableElement( Spacing margin) {
+    protected MutableElement(Spacing margin) {
         this.margin = margin;
+    }
+
+    /**
+     * This method should be called whenever this {@link MutableElement} is changed in a way that could affect how
+     * parent {@link MutableContainer}s present it.
+     */
+    public void propagateUpdate() {
+        if (parent != null) {
+            parent.propagateUpdate();
+        }
+    }
+
+    public void setParent(MutableContainer parent) {
+        this.parent = parent;
     }
 
     public Spacing getMargin() {
@@ -30,23 +40,10 @@ public abstract class MutableElement {
         );
     }
 
-    public void setParent(MutableContainer parent) {
-        this.parent = parent;
-    }
-
     public MutableContainer getParent() {
         return parent;
     }
 
-    public Vector2i getSize() {
-        return cachedSize.get()
-            .orElseGet(() -> {
-                Vector2i size = calculateSize();
-                cachedSize.set(size);
-                return size;
-            });
-    }
-
-    public abstract Vector2i calculateSize();
+    public abstract Vector2i getSize();
 
 }

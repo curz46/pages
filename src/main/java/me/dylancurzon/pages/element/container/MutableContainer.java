@@ -1,7 +1,6 @@
 package me.dylancurzon.pages.element.container;
 
 import me.dylancurzon.pages.element.MutableElement;
-import me.dylancurzon.pages.util.Cached;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 
@@ -14,9 +13,10 @@ import static me.dylancurzon.pages.element.container.Positioning.*;
 public class MutableContainer extends MutableElement {
 
     private final ImmutableContainer container;
-
     private final List<MutableElement> elements;
-    private final Cached<Map<MutableElement, Vector2i>> positions = new Cached<>();
+
+    private Vector2i size;
+    private Map<MutableElement, Vector2i> positions;
 
     private Color fillColor;
     private Color lineColor;
@@ -30,16 +30,26 @@ public class MutableContainer extends MutableElement {
         fillColor = container.getFillColor().orElse(null);
         lineColor = container.getLineColor().orElse(null);
         lineWidth = container.getLineWidth().orElse(null);
+
+        positions = computePositions();
     }
 
-    public List<MutableElement> getElements() {
-        return elements;
+    /**
+     * Recalculates the positions of this {@link MutableContainer}'s children and its size, then propagates this update
+     * to the parent.
+     */
+    @Override
+    public void propagateUpdate() {
+        positions = computePositions();
+        size = computeSize();
+
+        super.propagateUpdate();
     }
 
     public Map<MutableElement, Vector2i> flatten() {
         Map<MutableElement, Vector2i> elements = new HashMap<>();
 
-        getPositions().forEach((element, position) -> {
+        positions.forEach((element, position) -> {
             if (element instanceof MutableContainer) {
                 Map<MutableElement, Vector2i> containerElements = ((MutableContainer) element).flatten();
                 containerElements.forEach((containerElement, containerPosition) -> {
@@ -53,8 +63,7 @@ public class MutableContainer extends MutableElement {
         return elements;
     }
 
-    @Override
-    public Vector2i calculateSize() {
+    public Vector2i computeSize() {
         // TODO: Properties accessed here should be replicated in this Object, not referenced.
         // This allows users to mutate the properties if desired
         Vector2i size = container.getSize();
@@ -91,23 +100,11 @@ public class MutableContainer extends MutableElement {
         return size;
     }
 
-
-    public Map<MutableElement, Vector2i> getPositions() {
-        Map<MutableElement, Vector2i> result = positions.get()
-            .orElseGet(() -> {
-                Map<MutableElement, Vector2i> positions = calculatePositions();
-                this.positions.set(positions);
-                return positions;
-            });
-
-        return result;
-    }
-
     /**
      * @return A map of each MutableElement (in {@link this#elements} and its calculated position. It factors in
      * if the {@link this#container} is centering, inline, padded and includes each MutableElement's margin.
      */
-    private Map<MutableElement, Vector2i> calculatePositions() {
+    private Map<MutableElement, Vector2i> computePositions() {
         Map<MutableElement, Vector2i> positions = new LinkedHashMap<>();
         if (elements.isEmpty()) return positions;
 
@@ -163,6 +160,22 @@ public class MutableContainer extends MutableElement {
 
     public Optional<Integer> getLineWidth() {
         return Optional.ofNullable(lineWidth);
+    }
+
+    public List<MutableElement> getElements() {
+        return elements;
+    }
+
+    public Map<MutableElement, Vector2i> getPositions() {
+        return positions;
+    }
+
+    @Override
+    public Vector2i getSize() {
+        if (size == null) {
+            size = computeSize();
+        }
+        return size;
     }
 
 }

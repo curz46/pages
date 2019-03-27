@@ -7,23 +7,25 @@ import me.dylancurzon.pages.util.Vector2i;
 
 public class SpriteMutableElement extends MutableElement {
 
-    protected final Sprite sprite;
+    protected Sprite sprite;
 
     public SpriteMutableElement(Spacing margin, Sprite sprite) {
         super(margin);
         this.sprite = sprite;
     }
 
-    @Override
-    public Vector2i calculateSize() {
-        return Vector2i.of(
-            sprite.getWidth(),
-            sprite.getHeight()
-        );
+    public void setSprite(Sprite sprite) {
+        propagateUpdate();
+        this.sprite = sprite;
     }
 
     public Sprite getSprite() {
         return sprite;
+    }
+
+    @Override
+    public Vector2i getSize() {
+        return Vector2i.of(sprite.getWidth(), sprite.getHeight());
     }
 
 }

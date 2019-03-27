@@ -22,7 +22,7 @@ public class Page extends MutableContainer {
     }
 
     @Override
-    public Vector2i calculateSize() {
+    public Vector2i computeSize() {
         return template.getSize();
     }
 
@@ -31,6 +31,7 @@ public class Page extends MutableContainer {
         return container.flatten();
     }
 
+    @Override
     public Map<MutableElement, Vector2i> getPositions() {
         return container.getPositions();
     }

@@ -17,6 +17,7 @@ public class TextMutableElement extends MutableElement {
     }
 
     public void setSprite(TextSprite sprite) {
+        propagateUpdate();
         this.sprite = sprite;
     }
 
@@ -25,7 +26,7 @@ public class TextMutableElement extends MutableElement {
     }
 
     @Override
-    public Vector2i calculateSize() {
+    public Vector2i getSize() {
         return Vector2i.of(sprite.getWidth(), sprite.getHeight());
     }
 
