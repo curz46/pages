@@ -1,8 +1,7 @@
-package me.dylancurzon.pages.elements.container;
+package me.dylancurzon.pages.element.container;
 
-import me.dylancurzon.pages.elements.ImmutableElement;
-import me.dylancurzon.pages.elements.mutable.MutableContainer;
-import me.dylancurzon.pages.elements.mutable.MutableElement;
+import me.dylancurzon.pages.element.ImmutableElement;
+import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.NotNull;

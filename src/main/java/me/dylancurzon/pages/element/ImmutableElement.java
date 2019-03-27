@@ -1,6 +1,5 @@
-package me.dylancurzon.pages.elements;
+package me.dylancurzon.pages.element;
 
-import me.dylancurzon.pages.elements.mutable.MutableElement;
 import me.dylancurzon.pages.util.Spacing;
 import org.jetbrains.annotations.NotNull;
 

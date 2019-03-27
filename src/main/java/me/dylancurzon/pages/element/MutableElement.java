@@ -1,5 +1,6 @@
-package me.dylancurzon.pages.elements.mutable;
+package me.dylancurzon.pages.element;
 
+import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.util.Cached;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;

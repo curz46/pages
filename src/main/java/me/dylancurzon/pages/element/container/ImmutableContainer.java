@@ -1,4 +1,4 @@
-package me.dylancurzon.pages.elements.container;
+package me.dylancurzon.pages.element.container;
 
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;

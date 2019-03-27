@@ -1,7 +1,6 @@
-package me.dylancurzon.pages.elements.mutable;
+package me.dylancurzon.pages.element.container;
 
-import me.dylancurzon.pages.elements.container.ImmutableContainer;
-import me.dylancurzon.pages.elements.container.Positioning;
+import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.util.Cached;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
@@ -11,7 +10,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 
-import static me.dylancurzon.pages.elements.container.Positioning.*;
+import static me.dylancurzon.pages.element.container.Positioning.*;
 
 public class MutableContainer extends MutableElement {
 

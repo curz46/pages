@@ -1,4 +1,4 @@
-package me.dylancurzon.pages.elements.container;
+package me.dylancurzon.pages.element.container;
 
 public enum Positioning {
 

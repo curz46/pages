@@ -1,7 +1,6 @@
-package me.dylancurzon.pages.elements.container;
+package me.dylancurzon.pages.element.container;
 
-import me.dylancurzon.pages.elements.ImmutableElement;
-import me.dylancurzon.pages.elements.mutable.MutableContainer;
+import me.dylancurzon.pages.element.ImmutableElement;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2d;
 import me.dylancurzon.pages.util.Vector2i;
@@ -15,7 +14,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static me.dylancurzon.pages.elements.container.Positioning.INLINE;
+import static me.dylancurzon.pages.element.container.Positioning.INLINE;
 
 public class LayoutImmutableContainer extends ImmutableElement implements ImmutableContainer {
 

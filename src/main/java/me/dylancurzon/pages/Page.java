@@ -1,7 +1,7 @@
 package me.dylancurzon.pages;
 
-import me.dylancurzon.pages.elements.mutable.MutableContainer;
-import me.dylancurzon.pages.elements.mutable.MutableElement;
+import me.dylancurzon.pages.element.container.MutableContainer;
+import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.NotNull;
 

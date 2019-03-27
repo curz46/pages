@@ -1,7 +1,7 @@
-package me.dylancurzon.pages.elements;
+package me.dylancurzon.pages.element.text;
 
-import me.dylancurzon.pages.elements.mutable.MutableElement;
-import me.dylancurzon.pages.elements.mutable.TextMutableElement;
+import me.dylancurzon.pages.element.ImmutableElement;
+import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.util.TextSprite;
 import org.jetbrains.annotations.NotNull;
 

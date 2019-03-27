@@ -1,6 +1,6 @@
-package me.dylancurzon.pages.elements.mutable;
+package me.dylancurzon.pages.element.text;
 
-import me.dylancurzon.pages.elements.TextImmutableElement;
+import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.TextSprite;
 import me.dylancurzon.pages.util.Vector2i;
