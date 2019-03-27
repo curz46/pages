@@ -1,12 +1,12 @@
 package me.dylancurzon.pages.elements.container;
 
-import com.sun.istack.internal.NotNull;
 import me.dylancurzon.pages.elements.ImmutableElement;
 import me.dylancurzon.pages.elements.mutable.MutableContainer;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2d;
 import me.dylancurzon.pages.util.Vector2i;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -80,16 +80,19 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
             .asMutable();
     }
 
+    @NotNull
     @Override
     public Spacing getPadding() {
         return padding;
     }
 
+    @NotNull
     @Override
     public Vector2i getSize() {
         return size;
     }
 
+    @NotNull
     @Override
     public Vector2i getMarginedSize() {
         return getSize().add(
@@ -100,6 +103,7 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
         );
     }
 
+    @NotNull
     @Override
     public Vector2i getPaddedSize() {
         return getSize().sub(
@@ -110,26 +114,31 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
         );
     }
 
+    @NotNull
     @Override
     public boolean isCentering() {
         return centering;
     }
 
+    @NotNull
     @Override
     public Positioning getPositioning() {
         return positioning;
     }
 
+    @NotNull
     @Override
     public Optional<Color> getFillColor() {
         return Optional.ofNullable(fillColor);
     }
 
+    @NotNull
     @Override
     public Optional<Color> getLineColor() {
         return Optional.ofNullable(lineColor);
     }
 
+    @NotNull
     @Override
     public Optional<Integer> getLineWidth() {
         return Optional.ofNullable(lineWidth);

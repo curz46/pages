@@ -1,8 +1,5 @@
 package me.dylancurzon.pages.util;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
-
-@Immutable
 public class Vector2d {
 
     protected final double x;

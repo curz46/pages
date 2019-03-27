@@ -1,8 +1,8 @@
 package me.dylancurzon.pages.elements.container;
 
-import com.sun.istack.internal.NotNull;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Optional;
@@ -24,7 +24,6 @@ public interface ImmutableContainer {
     @NotNull
     Vector2i getPaddedSize();
 
-    @NotNull
     boolean isCentering();
 
     @NotNull

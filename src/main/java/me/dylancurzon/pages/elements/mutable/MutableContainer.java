@@ -1,11 +1,11 @@
 package me.dylancurzon.pages.elements.mutable;
 
-import com.sun.istack.internal.NotNull;
 import me.dylancurzon.pages.elements.container.ImmutableContainer;
 import me.dylancurzon.pages.elements.container.Positioning;
 import me.dylancurzon.pages.util.Cached;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.List;
@@ -56,6 +56,7 @@ public class MutableContainer extends MutableElement {
         return elements;
     }
 
+    @NotNull
     @Override
     public Vector2i calculateSize() {
         // TODO: Properties accessed here should be replicated in this Object, not referenced.

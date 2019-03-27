@@ -1,11 +1,9 @@
 package me.dylancurzon.pages.elements;
 
-import com.sun.istack.internal.NotNull;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import me.dylancurzon.pages.elements.mutable.MutableElement;
 import me.dylancurzon.pages.util.Spacing;
+import org.jetbrains.annotations.NotNull;
 
-@Immutable
 public abstract class ImmutableElement {
 
     protected final Spacing margin;

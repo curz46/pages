@@ -1,9 +1,9 @@
 package me.dylancurzon.pages;
 
-import com.sun.istack.internal.NotNull;
 import me.dylancurzon.pages.elements.container.DefaultImmutableContainer;
 import me.dylancurzon.pages.elements.mutable.MutableContainer;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.NotNull;
 
 public class PageTemplate extends DefaultImmutableContainer {
 
@@ -43,6 +43,7 @@ public class PageTemplate extends DefaultImmutableContainer {
             return this;
         }
 
+        @NotNull
         @Override
         public Builder self() {
             return this;

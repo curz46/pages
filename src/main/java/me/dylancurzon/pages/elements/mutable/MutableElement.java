@@ -1,9 +1,9 @@
 package me.dylancurzon.pages.elements.mutable;
 
-import com.sun.istack.internal.NotNull;
 import me.dylancurzon.pages.util.Cached;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class MutableElement {
 

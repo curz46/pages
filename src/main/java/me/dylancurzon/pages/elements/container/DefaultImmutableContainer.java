@@ -1,12 +1,11 @@
 package me.dylancurzon.pages.elements.container;
 
-import com.sun.istack.internal.NotNull;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import me.dylancurzon.pages.elements.ImmutableElement;
 import me.dylancurzon.pages.elements.mutable.MutableContainer;
 import me.dylancurzon.pages.elements.mutable.MutableElement;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Immutable
 public class DefaultImmutableContainer extends ImmutableElement implements ImmutableContainer {
 
     protected final List<Function<ImmutableContainer, ImmutableElement>> elements;
@@ -75,6 +73,7 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
         return size;
     }
 
+    @NotNull
     @Override
     public Vector2i getMarginedSize() {
         return getSize().add(
@@ -85,6 +84,7 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
         );
     }
 
+    @NotNull
     @Override
     public Vector2i getPaddedSize() {
         return getSize().sub(
@@ -95,16 +95,19 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
         );
     }
 
+    @NotNull
     @Override
     public Optional<Color> getFillColor() {
         return Optional.ofNullable(fillColor);
     }
 
+    @NotNull
     @Override
     public Optional<Color> getLineColor() {
         return Optional.ofNullable(lineColor);
     }
 
+    @NotNull
     @Override
     public Optional<Integer> getLineWidth() {
         return Optional.ofNullable(lineWidth);
@@ -115,10 +118,12 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
         return padding;
     }
 
+    @NotNull
     public boolean isCentering() {
         return centering;
     }
 
+    @NotNull
     @Override
     public Positioning getPositioning() {
         return positioning;
@@ -126,6 +131,7 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
 
     public static class ContainerBuilder extends Builder<ContainerBuilder> {
 
+        @NotNull
         @Override
         public ContainerBuilder self() {
             return this;

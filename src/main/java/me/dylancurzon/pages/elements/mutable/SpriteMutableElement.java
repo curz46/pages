@@ -3,6 +3,7 @@ package me.dylancurzon.pages.elements.mutable;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Sprite;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.NotNull;
 
 public class SpriteMutableElement extends MutableElement {
 
@@ -13,6 +14,7 @@ public class SpriteMutableElement extends MutableElement {
         this.sprite = sprite;
     }
 
+    @NotNull
     @Override
     public Vector2i calculateSize() {
         return Vector2i.of(

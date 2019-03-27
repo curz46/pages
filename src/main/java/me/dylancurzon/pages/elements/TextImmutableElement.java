@@ -1,12 +1,10 @@
 package me.dylancurzon.pages.elements;
 
-import com.sun.istack.internal.NotNull;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import me.dylancurzon.pages.elements.mutable.MutableElement;
 import me.dylancurzon.pages.elements.mutable.TextMutableElement;
 import me.dylancurzon.pages.util.TextSprite;
+import org.jetbrains.annotations.NotNull;
 
-@Immutable
 public class TextImmutableElement extends ImmutableElement {
 
     private final TextSprite sprite;
@@ -42,6 +40,7 @@ public class TextImmutableElement extends ImmutableElement {
             return this;
         }
 
+        @NotNull
         @Override
         public Builder self() {
             return this;
