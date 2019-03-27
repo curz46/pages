@@ -55,23 +55,6 @@ public class Page extends MutableContainer {
         return container.draw();
     }
 
-    /**
-     * @param position The position of the click event on the screen. Will only fire if within this Page's bounds.
-     */
-    @Override
-    public void click(Vector2i position) {
-        Vector2i relative = position.sub(this.position);
-        container.click(relative);
-    }
-
-    @Override
-    public Vector2i getMousePosition(MutableElement element) {
-        // A page is a wrapper for a container. The container has the same position.
-        // final Vector2i position = this.calculatePositions().get(element);
-        if (mousePosition == null) return null;
-        return mousePosition.sub(position);
-    }
-
     public Map<MutableElement, Vector2i> getPositions() {
         return container.getPositions();
     }

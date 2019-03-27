@@ -51,12 +51,12 @@ public class PageTemplate extends DefaultImmutableContainer {
         @Override
         @NotNull
         public PageTemplate build() {
-            if (super.centering && super.elements.size() > 1) {
+            if (centering && elements.size() > 1) {
                 throw new RuntimeException(
                     "A centering PageTemplate may only contain a single ImmutableElement!"
                 );
             }
-            if (super.elements.size() == 0) {
+            if (elements.size() == 0) {
                 throw new RuntimeException("Empty PageTemplate is not permitted!");
             }
             if (position == null) {

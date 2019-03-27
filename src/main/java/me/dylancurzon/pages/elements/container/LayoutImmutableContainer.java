@@ -94,8 +94,8 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
     public Vector2i getMarginedSize() {
         return getSize().add(
             Vector2i.of(
-                super.margin.getLeft() + super.margin.getRight(),
-                super.margin.getBottom() + super.margin.getTop()
+                margin.getLeft() + margin.getRight(),
+                margin.getBottom() + margin.getTop()
             )
         );
     }

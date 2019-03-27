@@ -2,11 +2,9 @@ package me.dylancurzon.pages.elements;
 
 import com.sun.istack.internal.NotNull;
 import jdk.nashorn.internal.ir.annotations.Immutable;
-import me.dylancurzon.pages.util.Sprite;
 import me.dylancurzon.pages.elements.mutable.MutableElement;
 import me.dylancurzon.pages.elements.mutable.SpriteMutableElement;
-
-import java.util.function.Consumer;
+import me.dylancurzon.pages.util.Sprite;
 
 @Immutable
 public class SpriteImmutableElement extends ImmutableElement {
@@ -32,15 +30,7 @@ public class SpriteImmutableElement extends ImmutableElement {
 
     @Override
     public MutableElement asMutable() {
-        return super.doMutate(new SpriteMutableElement(super.margin, super.interactOptions, sprite) {
-            @Override
-            public void tick() {
-                Consumer<MutableElement> consumer = SpriteImmutableElement.super.tickConsumer;
-                if (consumer != null) {
-                    consumer.accept(this);
-                }
-            }
-        });
+        return new SpriteMutableElement(margin, sprite);
     }
 
     public static class Builder extends ImmutableElement.Builder<SpriteImmutableElement, Builder> {
@@ -50,10 +40,7 @@ public class SpriteImmutableElement extends ImmutableElement {
         protected Builder() {}
 
         protected Builder(SpriteImmutableElement element) {
-            interactOptions = element.interactOptions;
             sprite = element.sprite;
-            tickConsumer = element.tickConsumer;
-            mutator = element.mutator;
             margin = element.margin;
         }
 

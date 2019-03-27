@@ -2,21 +2,16 @@ package me.dylancurzon.pages.elements.container;
 
 import com.sun.istack.internal.NotNull;
 import jdk.nashorn.internal.ir.annotations.Immutable;
-import me.dylancurzon.pages.AlignedElement;
-import me.dylancurzon.pages.util.Vector2i;
 import me.dylancurzon.pages.elements.ImmutableElement;
 import me.dylancurzon.pages.elements.mutable.MutableContainer;
-import me.dylancurzon.pages.InteractOptions;
-import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.elements.mutable.MutableElement;
-import me.dylancurzon.pages.elements.mutable.WrappingMutableElement;
+import me.dylancurzon.pages.util.Spacing;
+import me.dylancurzon.pages.util.Vector2i;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -63,90 +58,7 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
             .map(fn -> fn.apply(this))
             .map(ImmutableElement::asMutable)
             .collect(Collectors.toList());
-        MutableContainer container = new MutableContainer(super.margin, this, mutableElements) {
-            @Override
-            public Vector2i calculateSize() {
-                Vector2i size = DefaultImmutableContainer.this.size;
-                if (size == null || size.getX() == -1 || size.getY() == -1) {
-                    Vector2i calculatedSize = Vector2i.of(0, 0);
-                    for (MutableElement mut : mutableElements) {
-                        Vector2i elementSize = mut.getMarginedSize();
-                        calculatedSize = calculatedSize.add(
-                            positioning == Positioning.INLINE
-                                ? Vector2i.of(elementSize.getX(), 0)
-                                : Vector2i.of(0, elementSize.getY())
-                        );
-                        if (positioning != Positioning.INLINE
-                            && calculatedSize.getX() < elementSize.getX()) {
-                            calculatedSize = calculatedSize.setX(elementSize.getX());
-                        }
-                        if (positioning == Positioning.INLINE
-                            && calculatedSize.getY() < elementSize.getY()) {
-                            calculatedSize = calculatedSize.setY(elementSize.getY());
-                        }
-                    }
-
-                    if (size == null) {
-                        return calculatedSize;
-                    }
-                    if (size.getX() == -1) {
-                        size = size.setX(calculatedSize.getX());
-                    }
-                    if (size.getY() == -1) {
-                        size = size.setY(calculatedSize.getY());
-                    }
-                }
-
-                return size;
-            }
-
-            @Override
-            public List<AlignedElement> draw() {
-                List<AlignedElement> elements = new ArrayList<>();
-                for (Map.Entry<MutableElement, Vector2i> entry : super.getPositions().entrySet()) {
-                    MutableElement element = entry.getKey();
-                    Vector2i position = entry.getValue();
-
-                    if (element instanceof MutableContainer) {
-                        elements.addAll(
-                            ((MutableContainer) element).draw().stream()
-                                .map(containedElement -> new AlignedElement(
-                                    containedElement.getElement(),
-                                    position.add(containedElement.getPosition())
-                                ))
-                                .collect(Collectors.toList())
-                        );
-                    }
-                    elements.add(new AlignedElement(element, position));
-                }
-
-                return elements;
-            }
-
-            @Override
-            public void tick() {
-                super.tick();
-                mutableElements.forEach(MutableElement::tick);
-                Consumer<MutableElement> consumer = DefaultImmutableContainer.super.getTickConsumer();
-                if (consumer != null) {
-                    consumer.accept(this);
-                }
-            }
-
-            private void applyHighlight(int[] pixels) {
-                for (int i = 0; i < pixels.length; i++) {
-                    // In order to darken the pixels, we need to convert them to rgb values first so that they
-                    // can be affected individually.
-                    double factor = 0.7;
-                    int value = pixels[i];
-                    int a = (value >> 24) & 0xFF;
-                    int nr = (int) ((value >> 16 & 0xFF) * factor);
-                    int ng = (int) ((value >> 8 & 0xFF) * factor);
-                    int nb = (int) ((value & 0xFF) * factor);
-                    pixels[i] = (a << 24) | (nr << 16) | (ng << 8) | nb;
-                }
-            }
-        };
+        MutableContainer container = new MutableContainer(margin, this, mutableElements);
         mutableElements.forEach(mut -> mut.setParent(container));
         return container;
     }
@@ -165,8 +77,8 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
     public Vector2i getMarginedSize() {
         return getSize().add(
             Vector2i.of(
-                super.margin.getLeft() + super.margin.getRight(),
-                super.margin.getBottom() + super.margin.getTop()
+                margin.getLeft() + margin.getRight(),
+                margin.getBottom() + margin.getTop()
             )
         );
     }

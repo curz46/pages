@@ -1,24 +1,24 @@
 package me.dylancurzon.pages.elements.mutable;
 
 import com.sun.istack.internal.NotNull;
-import me.dylancurzon.pages.*;
+import me.dylancurzon.pages.AlignedElement;
+import me.dylancurzon.pages.animation.Animation;
+import me.dylancurzon.pages.animation.QuarticEaseInAnimation;
+import me.dylancurzon.pages.elements.container.ImmutableContainer;
+import me.dylancurzon.pages.elements.container.Positioning;
 import me.dylancurzon.pages.util.Cached;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2d;
 import me.dylancurzon.pages.util.Vector2i;
-import me.dylancurzon.pages.animation.Animation;
-import me.dylancurzon.pages.animation.QuarticEaseInAnimation;
-import me.dylancurzon.pages.elements.container.ImmutableContainer;
 
 import java.awt.*;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static me.dylancurzon.pages.elements.container.Positioning.*;
 
-public abstract class MutableContainer extends MutableElement {
+public class MutableContainer extends MutableElement {
 
     private static final double SCROLL_FACTOR = 8;
 
@@ -36,9 +36,8 @@ public abstract class MutableContainer extends MutableElement {
     private Color lineColor;
     private Integer lineWidth;
 
-    protected MutableContainer(Spacing margin, ImmutableContainer container,
-                               List<MutableElement> elements) {
-        super(margin, container.getInteractOptions());
+    public MutableContainer(Spacing margin, ImmutableContainer container, List<MutableElement> elements) {
+        super(margin);
         this.container = container;
         this.elements = elements;
 
@@ -47,12 +46,71 @@ public abstract class MutableContainer extends MutableElement {
         lineWidth = container.getLineWidth().orElse(null);
     }
 
-    public abstract List<AlignedElement> draw();
-
     @NotNull
     public List<MutableElement> getElements() {
         return elements;
     }
+
+    public List<AlignedElement> draw() {
+        List<AlignedElement> elements = new ArrayList<>();
+        for (Map.Entry<MutableElement, Vector2i> entry : getPositions().entrySet()) {
+            MutableElement element = entry.getKey();
+            Vector2i position = entry.getValue();
+
+            if (element instanceof MutableContainer) {
+                elements.addAll(
+                    ((MutableContainer) element).draw().stream()
+                        .map(containedElement -> new AlignedElement(
+                            containedElement.getElement(),
+                            position.add(containedElement.getPosition())
+                        ))
+                        .collect(Collectors.toList())
+                );
+            }
+            elements.add(new AlignedElement(element, position));
+        }
+
+        return elements;
+    }
+
+    @Override
+    public Vector2i calculateSize() {
+        // TODO: Properties accessed here should be replicated in this Object, not referenced.
+        // This allows users to mutate the properties if desired
+        Vector2i size = container.getSize();
+        if (size == null || size.getX() == -1 || size.getY() == -1) {
+            Vector2i calculatedSize = Vector2i.of(0, 0);
+            for (MutableElement mut : elements) {
+                Vector2i elementSize = mut.getMarginedSize();
+                calculatedSize = calculatedSize.add(
+                    container.getPositioning() == Positioning.INLINE
+                        ? Vector2i.of(elementSize.getX(), 0)
+                        : Vector2i.of(0, elementSize.getY())
+                );
+                if (container.getPositioning() != Positioning.INLINE
+                    && calculatedSize.getX() < elementSize.getX()) {
+                    calculatedSize = calculatedSize.setX(elementSize.getX());
+                }
+                if (container.getPositioning() == Positioning.INLINE
+                    && calculatedSize.getY() < elementSize.getY()) {
+                    calculatedSize = calculatedSize.setY(elementSize.getY());
+                }
+            }
+
+            if (size == null) {
+                return calculatedSize;
+            }
+            if (size.getX() == -1) {
+                size = size.setX(calculatedSize.getX());
+            }
+            if (size.getY() == -1) {
+                size = size.setY(calculatedSize.getY());
+            }
+        }
+
+        return size;
+    }
+
 
     public Map<MutableElement, Vector2i> getPositions() {
         Map<MutableElement, Vector2i> result = positions.get()
@@ -113,33 +171,6 @@ public abstract class MutableContainer extends MutableElement {
         }
 
         return positions;
-    }
-
-    @Override
-    public void click(@NotNull Vector2i position) {
-        super.click(position);
-        // for each MutableElement of this container, find the position relative to its position in this
-        // container.
-        Map<MutableElement, Vector2i> elementPositionMap = getPositions();
-        elementPositionMap.forEach((mut, elementPos) -> {
-            Vector2i relative = position.sub(elementPos);
-            Vector2i size = mut.getSize();
-            // ensure in bounds
-            if (relative.getX() < 0 || relative.getX() >= size.getX() ||
-                relative.getY() < 0 || relative.getY() >= size.getY()) {
-                return;
-            }
-            mut.click(relative);
-        });
-    }
-
-    @Override
-    public Vector2i getMousePosition(MutableElement element) {
-        Vector2i position = getPositions().get(element);
-        if (position == null || parent == null) return null;
-        Vector2i mousePosition = parent.getMousePosition(this);
-        if (mousePosition == null) return null;
-        return mousePosition.sub(position);
     }
 
     @Override

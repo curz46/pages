@@ -11,7 +11,7 @@ public class SineEaseOutAnimation extends Animation {
 
     @Override
     public double determineValue() {
-        double x = (((double) super.ticks) / super.duration) * (Math.PI / 2);
+        double x = (((double) ticks) / duration) * (Math.PI / 2);
         return 1 + Math.sin(x - (Math.PI / 2));
     }
 

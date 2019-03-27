@@ -24,7 +24,7 @@ public class TextImmutableElement extends ImmutableElement {
     @Override
     @NotNull
     public MutableElement asMutable() {
-        return super.doMutate(new TextMutableElement(super.margin, this));
+        return new TextMutableElement(margin, this);
     }
 
     @NotNull

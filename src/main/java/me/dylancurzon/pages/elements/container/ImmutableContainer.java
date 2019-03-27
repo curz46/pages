@@ -3,7 +3,6 @@ package me.dylancurzon.pages.elements.container;
 import com.sun.istack.internal.NotNull;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
-import me.dylancurzon.pages.InteractOptions;
 
 import java.awt.*;
 import java.util.Optional;
@@ -46,8 +45,5 @@ public interface ImmutableContainer {
 
     @NotNull
     Optional<Integer> getLineWidth();
-
-    @NotNull
-    InteractOptions getInteractOptions();
 
 }

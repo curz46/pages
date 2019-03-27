@@ -1,11 +1,9 @@
 package me.dylancurzon.pages.elements.mutable;
 
-import me.dylancurzon.pages.util.TextSprite;
-import me.dylancurzon.pages.util.Vector2i;
 import me.dylancurzon.pages.elements.TextImmutableElement;
 import me.dylancurzon.pages.util.Spacing;
-
-import java.util.function.Consumer;
+import me.dylancurzon.pages.util.TextSprite;
+import me.dylancurzon.pages.util.Vector2i;
 
 public class TextMutableElement extends MutableElement {
 
@@ -13,7 +11,7 @@ public class TextMutableElement extends MutableElement {
     private TextSprite sprite;
 
     public TextMutableElement(Spacing margin, TextImmutableElement immutableElement) {
-        super(margin, immutableElement.getInteractOptions());
+        super(margin);
         this.immutableElement = immutableElement;
         sprite = this.immutableElement.getSprite();
     }
@@ -29,14 +27,6 @@ public class TextMutableElement extends MutableElement {
     @Override
     public Vector2i calculateSize() {
         return Vector2i.of(sprite.getWidth(), sprite.getHeight());
-    }
-
-    @Override
-    public void tick() {
-        Consumer<MutableElement> consumer = immutableElement.getTickConsumer();
-        if (consumer != null) {
-            consumer.accept(this);
-        }
     }
 
 }

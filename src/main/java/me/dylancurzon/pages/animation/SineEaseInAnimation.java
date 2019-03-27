@@ -12,11 +12,11 @@ public class SineEaseInAnimation extends Animation {
     @Override
     public double determineValue() {
         // When ticks=0, this will equal 0. As ticks=duration, this will equal Math.PI / 2.
-        double x = (((double) super.ticks) / super.duration) * (Math.PI / 2);
+        double x = (((double) ticks) / duration) * (Math.PI / 2);
         // Between 0 and Math.PI / 2, the sine function will return a value between 0 and 1. The
         // proceeding calculation expands and offsets this range to the desired minimum and maximum
         // values.
-        return (super.max - super.min) * Math.sin(x) + super.min;
+        return (max - min) * Math.sin(x) + min;
     }
 
 }
