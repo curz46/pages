@@ -4,7 +4,6 @@ import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.util.Cached;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.List;
@@ -33,7 +32,6 @@ public class MutableContainer extends MutableElement {
         lineWidth = container.getLineWidth().orElse(null);
     }
 
-    @NotNull
     public List<MutableElement> getElements() {
         return elements;
     }
@@ -55,7 +53,6 @@ public class MutableContainer extends MutableElement {
         return elements;
     }
 
-    @NotNull
     @Override
     public Vector2i calculateSize() {
         // TODO: Properties accessed here should be replicated in this Object, not referenced.

@@ -4,7 +4,6 @@ import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.TextSprite;
 import me.dylancurzon.pages.util.Vector2i;
-import org.jetbrains.annotations.NotNull;
 
 public class TextMutableElement extends MutableElement {
 
@@ -25,7 +24,6 @@ public class TextMutableElement extends MutableElement {
         return sprite;
     }
 
-    @NotNull
     @Override
     public Vector2i calculateSize() {
         return Vector2i.of(sprite.getWidth(), sprite.getHeight());

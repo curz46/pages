@@ -1,9 +1,8 @@
 package me.dylancurzon.pages;
 
-import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.element.MutableElement;
+import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.util.Vector2i;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -22,7 +21,6 @@ public class Page extends MutableContainer {
         position = this.template.getPosition();
     }
 
-    @NotNull
     @Override
     public Vector2i calculateSize() {
         return template.getSize();

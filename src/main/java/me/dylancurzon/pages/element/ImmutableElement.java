@@ -1,7 +1,6 @@
 package me.dylancurzon.pages.element;
 
 import me.dylancurzon.pages.util.Spacing;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class ImmutableElement {
 
@@ -15,10 +14,8 @@ public abstract class ImmutableElement {
         }
     }
 
-    @NotNull
     public abstract MutableElement asMutable();
 
-    @NotNull
     public Spacing getMargin() {
         return margin;
     }
@@ -27,16 +24,13 @@ public abstract class ImmutableElement {
 
         protected Spacing margin;
 
-        @NotNull
         public B setMargin(Spacing margin) {
             this.margin = margin;
             return self();
         }
 
-        @NotNull
         public abstract B self();
 
-        @NotNull
         public abstract T build();
 
     }

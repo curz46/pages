@@ -4,27 +4,23 @@ import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.util.Cached;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class MutableElement {
 
-    @NotNull
     protected final Spacing margin;
 
     protected MutableContainer parent;
 
     private final Cached<Vector2i> cachedSize = new Cached<>();
 
-    protected MutableElement(@NotNull Spacing margin) {
+    protected MutableElement( Spacing margin) {
         this.margin = margin;
     }
 
-    @NotNull
     public Spacing getMargin() {
         return margin;
     }
 
-    @NotNull
     public Vector2i getMarginedSize() {
         return getSize().add(
             Vector2i.of(
@@ -51,7 +47,6 @@ public abstract class MutableElement {
             });
     }
 
-    @NotNull
     public abstract Vector2i calculateSize();
 
 }

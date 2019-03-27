@@ -5,7 +5,6 @@ import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2d;
 import me.dylancurzon.pages.util.Vector2i;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -46,13 +45,11 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
         lineWidth = builder.lineWidth;
     }
 
-    @NotNull
     public static Builder builder() {
         return new Builder();
     }
 
     @Override
-    @NotNull
     public MutableContainer asMutable() {
         int total = elements.stream()
             .map(Pair::getKey).mapToInt(Integer::intValue).sum();
@@ -79,19 +76,16 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
             .asMutable();
     }
 
-    @NotNull
     @Override
     public Spacing getPadding() {
         return padding;
     }
 
-    @NotNull
     @Override
     public Vector2i getSize() {
         return size;
     }
 
-    @NotNull
     @Override
     public Vector2i getMarginedSize() {
         return getSize().add(
@@ -102,7 +96,6 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
         );
     }
 
-    @NotNull
     @Override
     public Vector2i getPaddedSize() {
         return getSize().sub(
@@ -113,31 +106,26 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
         );
     }
 
-    @NotNull
     @Override
     public boolean isCentering() {
         return centering;
     }
 
-    @NotNull
     @Override
     public Positioning getPositioning() {
         return positioning;
     }
 
-    @NotNull
     @Override
     public Optional<Color> getFillColor() {
         return Optional.ofNullable(fillColor);
     }
 
-    @NotNull
     @Override
     public Optional<Color> getLineColor() {
         return Optional.ofNullable(lineColor);
     }
 
-    @NotNull
     @Override
     public Optional<Integer> getLineWidth() {
         return Optional.ofNullable(lineWidth);
@@ -155,75 +143,63 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
         private Color lineColor;
         private Integer lineWidth;
 
-        @NotNull
         public Builder add(int ratio, ImmutableElement element) {
             elements.add(Pair.of(ratio, page -> element));
             return this;
         }
 
-        @NotNull
         public Builder add(int ratio,
                            Function<ImmutableContainer, ImmutableElement> fn) {
             elements.add(Pair.of(ratio, fn));
             return this;
         }
 
-        @NotNull
         public Builder setSize(Vector2i size) {
             this.size = size;
             return this;
         }
 
-        @NotNull
         public Builder setPadding(Spacing padding) {
             this.padding = padding;
             return this;
         }
 
-        @NotNull
         public Builder setPositioning(Positioning positioning) {
             this.positioning = positioning;
             return this;
         }
 
-        @NotNull
         public Builder setCentering(boolean centering) {
             this.centering = centering;
             return this;
         }
 
-        @NotNull
         public Builder setFillColor(Color color) {
             fillColor = color;
             return self();
         }
 
-        @NotNull
         public Builder setLineColor(Color color) {
             lineColor = color;
             return self();
         }
 
-        @NotNull
         public Builder setLineWidth(Integer width) {
             lineWidth = width;
             return self();
         }
 
-        @NotNull
         public Builder setScrollable(boolean scrollable) {
             this.scrollable = scrollable;
             return this;
         }
 
         @Override
-        @NotNull
         public Builder self() {
             return this;
         }
 
         @Override
-        @NotNull
         public LayoutImmutableContainer build() {
             return new LayoutImmutableContainer(this);
         }

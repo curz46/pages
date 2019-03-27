@@ -4,7 +4,6 @@ import me.dylancurzon.pages.element.ImmutableElement;
 import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -51,7 +50,6 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
     }
 
     @Override
-    @NotNull
     public MutableContainer asMutable() {
         List<MutableElement> mutableElements = elements.stream()
             .map(fn -> fn.apply(this))
@@ -62,17 +60,14 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
         return container;
     }
 
-    @NotNull
     public List<Function<ImmutableContainer, ImmutableElement>> getElements() {
         return elements;
     }
 
-    @NotNull
     public Vector2i getSize() {
         return size;
     }
 
-    @NotNull
     @Override
     public Vector2i getMarginedSize() {
         return getSize().add(
@@ -83,7 +78,6 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
         );
     }
 
-    @NotNull
     @Override
     public Vector2i getPaddedSize() {
         return getSize().sub(
@@ -94,35 +88,29 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
         );
     }
 
-    @NotNull
     @Override
     public Optional<Color> getFillColor() {
         return Optional.ofNullable(fillColor);
     }
 
-    @NotNull
     @Override
     public Optional<Color> getLineColor() {
         return Optional.ofNullable(lineColor);
     }
 
-    @NotNull
     @Override
     public Optional<Integer> getLineWidth() {
         return Optional.ofNullable(lineWidth);
     }
 
-    @NotNull
     public Spacing getPadding() {
         return padding;
     }
 
-    @NotNull
     public boolean isCentering() {
         return centering;
     }
 
-    @NotNull
     @Override
     public Positioning getPositioning() {
         return positioning;
@@ -130,7 +118,6 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
 
     public static class ContainerBuilder extends Builder<ContainerBuilder> {
 
-        @NotNull
         @Override
         public ContainerBuilder self() {
             return this;
@@ -150,13 +137,11 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
         protected Color lineColor;
         protected Integer lineWidth;
 
-        @NotNull
         public T add(ImmutableElement element) {
             elements.add(page -> element);
             return self();
         }
 
-        @NotNull
         public T add(ImmutableElement... elements) {
             for (ImmutableElement el : elements) {
                 add(el);
@@ -164,68 +149,57 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
             return self();
         }
 
-        @NotNull
         public T add(List<ImmutableElement> elements) {
             elements.forEach(this::add);
             return self();
         }
 
-        @NotNull
         public T add(Function<ImmutableContainer, ImmutableElement> fn) {
             elements.add(fn);
             return self();
         }
 
-        @NotNull
         public T setSize(Vector2i size) {
             this.size = size;
             return self();
         }
 
-        @NotNull
         public T setPadding(Spacing padding) {
             this.padding = padding;
             return self();
         }
 
-        @NotNull
         public T setPositioning(Positioning positioning) {
             this.positioning = positioning;
             return self();
         }
 
-        @NotNull
         public T setCentering(boolean centering) {
             this.centering = centering;
             return self();
         }
 
-        @NotNull
         public T setScrollable(boolean scrollable) {
             this.scrollable = scrollable;
             return self();
         }
 
-        @NotNull
         public T setFillColor(Color color) {
             fillColor = color;
             return self();
         }
 
-        @NotNull
         public T setLineColor(Color color) {
             lineColor = color;
             return self();
         }
 
-        @NotNull
         public T setLineWidth(Integer width) {
             lineWidth = width;
             return self();
         }
 
         @Override
-        @NotNull
         public DefaultImmutableContainer build() {
             if (centering && elements.size() > 1 && positioning != Positioning.OVERLAY) {
                 throw new RuntimeException(
