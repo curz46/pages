@@ -35,32 +35,25 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
     private final Color lineColor;
     private final Integer lineWidth;
 
-    protected DefaultImmutableContainer(Spacing margin, Consumer<MutableElement> tickConsumer,
-                                        List<Function<ImmutableContainer, ImmutableElement>> elements,
-                                        Vector2i size, Spacing padding,
-                                        Positioning positioning, boolean centering,
-                                        boolean scrollable,
-                                        Color fillColor, Color lineColor, Integer lineWidth,
-                                        Function<MutableElement, WrappingMutableElement> mutator,
-                                        InteractOptions interactOptions) {
-        super(margin, tickConsumer, mutator, interactOptions);
-        this.elements = elements;
-        this.size = size;
-        if (padding == null) {
-            this.padding = Spacing.ZERO;
+    protected DefaultImmutableContainer(Builder builder) {
+        super(builder);
+        elements = builder.elements;
+        size = builder.size;
+        if (builder.padding == null) {
+            padding = Spacing.ZERO;
         } else {
-            this.padding = padding;
+            padding = builder.padding;
         }
-        if (positioning == null) {
-            this.positioning = Positioning.DEFAULT;
+        if (builder.positioning == null) {
+            positioning = Positioning.DEFAULT;
         } else {
-            this.positioning = positioning;
+            positioning = builder.positioning;
         }
-        this.centering = centering;
-        this.scrollable = scrollable;
-        this.fillColor = fillColor;
-        this.lineColor = lineColor;
-        this.lineWidth = lineWidth;
+        centering = builder.centering;
+        scrollable = builder.scrollable;
+        fillColor = builder.fillColor;
+        lineColor = builder.lineColor;
+        lineWidth = builder.lineWidth;
     }
 
     @Override
@@ -325,21 +318,7 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
                     "A centering ImmutableContainer may only contain a single ImmutableElement!"
                 );
             }
-            return new DefaultImmutableContainer(
-                super.margin,
-                super.tickConsumer,
-                elements,
-                size,
-                padding,
-                positioning,
-                centering,
-                scrollable,
-                fillColor,
-                lineColor,
-                lineWidth,
-                super.mutator,
-                super.interactOptions
-            );
+            return new DefaultImmutableContainer(this);
         }
 
     }

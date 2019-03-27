@@ -1,34 +1,17 @@
 package me.dylancurzon.pages;
 
 import com.sun.istack.internal.NotNull;
-import me.dylancurzon.pages.elements.mutable.MutableContainer;
-import me.dylancurzon.pages.elements.ImmutableElement;
 import me.dylancurzon.pages.elements.container.DefaultImmutableContainer;
-import me.dylancurzon.pages.elements.container.ImmutableContainer;
-import me.dylancurzon.pages.elements.container.Positioning;
-import me.dylancurzon.pages.elements.mutable.MutableElement;
-import me.dylancurzon.pages.elements.mutable.WrappingMutableElement;
-import me.dylancurzon.pages.util.Spacing;
+import me.dylancurzon.pages.elements.mutable.MutableContainer;
 import me.dylancurzon.pages.util.Vector2i;
-
-import java.awt.*;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class PageTemplate extends DefaultImmutableContainer {
 
     private final Vector2i position;
 
-    protected PageTemplate(Spacing margin, Consumer<MutableElement> tickConsumer,
-                           List<Function<ImmutableContainer, ImmutableElement>> elements,
-                           Vector2i size, Spacing padding, Positioning positioning, boolean centering,
-                           Vector2i position, boolean scrollable,
-                           Color fillColor, Color lineColor, Integer lineWidth,
-                           Function<MutableElement, WrappingMutableElement> mutator,
-                           InteractOptions interactOptions) {
-        super(margin, tickConsumer, elements, size, padding, positioning, centering, scrollable, fillColor, lineColor, lineWidth, mutator, interactOptions);
-        this.position = position;
+    protected PageTemplate(Builder builder) {
+        super(builder);
+        position = builder.position;
     }
 
     @NotNull
@@ -83,22 +66,7 @@ public class PageTemplate extends DefaultImmutableContainer {
                 throw new RuntimeException("Size is a required attribute!");
             }
 
-            return new PageTemplate(
-                super.margin,
-                super.tickConsumer,
-                super.elements,
-                super.size,
-                super.padding,
-                super.positioning,
-                super.centering,
-                position,
-                super.scrollable,
-                super.fillColor,
-                super.lineColor,
-                super.lineWidth,
-                super.mutator,
-                super.interactOptions
-            );
+            return new PageTemplate(this);
         }
 
     }

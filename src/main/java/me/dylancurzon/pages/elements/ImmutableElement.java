@@ -18,21 +18,19 @@ public abstract class ImmutableElement {
     protected final Function<MutableElement, WrappingMutableElement> mutator;
     protected final InteractOptions interactOptions;
 
-    protected ImmutableElement(Spacing margin, Consumer<MutableElement> tickConsumer,
-                               Function<MutableElement, WrappingMutableElement> mutator,
-                               InteractOptions interactOptions) {
-        if (interactOptions == null) {
-            this.interactOptions = InteractOptions.empty();
+    protected ImmutableElement(Builder builder) {
+        if (builder.interactOptions == null) {
+            interactOptions = InteractOptions.empty();
         } else {
-            this.interactOptions = interactOptions;
+            interactOptions = builder.interactOptions;
         }
-        if (margin == null) {
-            this.margin = Spacing.ZERO;
+        if (builder.margin == null) {
+            margin = Spacing.ZERO;
         } else {
-            this.margin = margin;
+            margin = builder.margin;
         }
-        this.tickConsumer = tickConsumer;
-        this.mutator = mutator;
+        tickConsumer = builder.tickConsumer;
+        mutator = builder.mutator;
     }
 
     public MutableElement doMutate(MutableElement element) {

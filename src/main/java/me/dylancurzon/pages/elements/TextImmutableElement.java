@@ -2,27 +2,18 @@ package me.dylancurzon.pages.elements;
 
 import com.sun.istack.internal.NotNull;
 import jdk.nashorn.internal.ir.annotations.Immutable;
-import me.dylancurzon.pages.util.TextSprite;
-import me.dylancurzon.pages.InteractOptions;
-import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.elements.mutable.MutableElement;
 import me.dylancurzon.pages.elements.mutable.TextMutableElement;
-import me.dylancurzon.pages.elements.mutable.WrappingMutableElement;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
+import me.dylancurzon.pages.util.TextSprite;
 
 @Immutable
 public class TextImmutableElement extends ImmutableElement {
 
     private final TextSprite sprite;
 
-    protected TextImmutableElement(Spacing margin, Consumer<MutableElement> tickConsumer,
-                                   TextSprite sprite,
-                                   Function<MutableElement, WrappingMutableElement> mutator,
-                                   InteractOptions interactOptions) {
-        super(margin, tickConsumer, mutator, interactOptions);
-        this.sprite = sprite;
+    protected TextImmutableElement(Builder builder) {
+        super(builder);
+        sprite = builder.sprite;
     }
 
     @NotNull
@@ -59,13 +50,7 @@ public class TextImmutableElement extends ImmutableElement {
         @Override
         @NotNull
         public TextImmutableElement build() {
-            return new TextImmutableElement(
-                super.margin,
-                super.tickConsumer,
-                sprite,
-                super.mutator,
-                super.interactOptions
-            );
+            return new TextImmutableElement(this);
         }
 
     }

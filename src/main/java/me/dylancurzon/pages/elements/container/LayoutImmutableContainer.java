@@ -1,11 +1,8 @@
 package me.dylancurzon.pages.elements.container;
 
 import com.sun.istack.internal.NotNull;
-import me.dylancurzon.pages.InteractOptions;
 import me.dylancurzon.pages.elements.ImmutableElement;
 import me.dylancurzon.pages.elements.mutable.MutableContainer;
-import me.dylancurzon.pages.elements.mutable.MutableElement;
-import me.dylancurzon.pages.elements.mutable.WrappingMutableElement;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2d;
 import me.dylancurzon.pages.util.Vector2i;
@@ -15,7 +12,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,28 +30,21 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
     private final Integer lineWidth;
 
 
-    private LayoutImmutableContainer(Spacing margin, Consumer<MutableElement> tickConsumer,
-                                     List<Pair<Integer, Function<ImmutableContainer, ImmutableElement>>> elements,
-                                     Vector2i size, Spacing padding,
-                                     Positioning positioning, boolean centering,
-                                     boolean scrollable, Color fillColor, Color lineColor,
-                                     Integer lineWidth,
-                                     Function<MutableElement, WrappingMutableElement> mutator,
-                                     InteractOptions interactOptions) {
-        super(margin, tickConsumer, mutator, interactOptions);
-        this.elements = elements;
-        this.size = size;
-        this.positioning = positioning;
-        this.centering = centering;
-        if (padding == null) {
-            this.padding = Spacing.ZERO;
+    private LayoutImmutableContainer(Builder builder) {
+        super(builder);
+        elements = builder.elements;
+        size = builder.size;
+        positioning = builder.positioning;
+        centering = builder.centering;
+        if (builder.padding == null) {
+            padding = Spacing.ZERO;
         } else {
-            this.padding = padding;
+            padding = builder.padding;
         }
-        this.scrollable = scrollable;
-        this.fillColor = fillColor;
-        this.lineColor = lineColor;
-        this.lineWidth = lineWidth;
+        scrollable = builder.scrollable;
+        fillColor = builder.fillColor;
+        lineColor = builder.lineColor;
+        lineWidth = builder.lineWidth;
     }
 
     @NotNull
@@ -234,21 +223,7 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
         @Override
         @NotNull
         public LayoutImmutableContainer build() {
-            return new LayoutImmutableContainer(
-                super.margin,
-                super.tickConsumer,
-                elements,
-                size,
-                padding,
-                positioning,
-                centering,
-                scrollable,
-                fillColor,
-                lineColor,
-                lineWidth,
-                super.mutator,
-                super.interactOptions
-            );
+            return new LayoutImmutableContainer(this);
         }
 
     }

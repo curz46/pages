@@ -3,25 +3,19 @@ package me.dylancurzon.pages.elements;
 import com.sun.istack.internal.NotNull;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import me.dylancurzon.pages.util.Sprite;
-import me.dylancurzon.pages.InteractOptions;
-import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.elements.mutable.MutableElement;
 import me.dylancurzon.pages.elements.mutable.SpriteMutableElement;
-import me.dylancurzon.pages.elements.mutable.WrappingMutableElement;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 @Immutable
 public class SpriteImmutableElement extends ImmutableElement {
 
     private final Sprite sprite;
 
-    public SpriteImmutableElement(Spacing margin, Consumer<MutableElement> tickConsumer,
-                                  Function<MutableElement, WrappingMutableElement> mutator,
-                                  InteractOptions interactOptions, Sprite animatedSprite) {
-        super(margin, tickConsumer, mutator, interactOptions);
-        sprite = animatedSprite;
+    public SpriteImmutableElement(Builder builder) {
+        super(builder);
+        sprite = builder.sprite;
     }
 
     public static Builder builder() {
@@ -51,21 +45,21 @@ public class SpriteImmutableElement extends ImmutableElement {
 
     public static class Builder extends ImmutableElement.Builder<SpriteImmutableElement, Builder> {
 
-        protected Sprite animatedSprite;
+        protected Sprite sprite;
 
         protected Builder() {}
 
         protected Builder(SpriteImmutableElement element) {
             interactOptions = element.interactOptions;
-            animatedSprite = element.sprite;
+            sprite = element.sprite;
             tickConsumer = element.tickConsumer;
             mutator = element.mutator;
             margin = element.margin;
         }
 
         @NotNull
-        public Builder setAnimatedSprite(Sprite animatedSprite) {
-            this.animatedSprite = animatedSprite;
+        public Builder setSprite(Sprite sprite) {
+            this.sprite = sprite;
             return this;
         }
 
@@ -77,14 +71,7 @@ public class SpriteImmutableElement extends ImmutableElement {
         @Override
         @NotNull
         public SpriteImmutableElement build() {
-            return new SpriteImmutableElement(
-                super.margin,
-                super.tickConsumer,
-                super.mutator,
-                super.interactOptions,
-                animatedSprite
-            );
-
+            return new SpriteImmutableElement(this);
         }
 
     }
