@@ -22,6 +22,7 @@ public class PageTemplate extends DefaultImmutableContainer {
         MutableContainer container = super.asMutable();
         Page page = new Page(this, container);
         container.setParent(page);
+        listeners.forEach(page::subscribe);
         return page;
     }
 
@@ -31,7 +32,7 @@ public class PageTemplate extends DefaultImmutableContainer {
 
     public static class Builder extends DefaultImmutableContainer.Builder<Builder> {
 
-        private Vector2i position;
+        private Vector2i position = Vector2i.of(0, 0);
 
         public Builder setPosition(Vector2i position) {
             this.position = position;
@@ -50,16 +51,9 @@ public class PageTemplate extends DefaultImmutableContainer {
                     "A centering PageTemplate may only contain a single ImmutableElement!"
                 );
             }
-            if (elements.size() == 0) {
-                throw new RuntimeException("Empty PageTemplate is not permitted!");
-            }
-            if (position == null) {
-                throw new RuntimeException("Position is a required attribute!");
-            }
             if (size == null) {
                 throw new RuntimeException("Size is a required attribute!");
             }
-
             return new PageTemplate(this);
         }
 

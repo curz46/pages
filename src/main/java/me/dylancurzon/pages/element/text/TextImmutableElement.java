@@ -19,7 +19,9 @@ public class TextImmutableElement extends ImmutableElement {
 
     @Override
     public MutableElement asMutable() {
-        return new TextMutableElement(margin, this);
+        TextMutableElement element = new TextMutableElement(margin, this);
+        listeners.forEach(element::subscribe);
+        return element;
     }
 
     public TextSprite getSprite() {

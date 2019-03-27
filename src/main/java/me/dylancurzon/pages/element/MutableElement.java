@@ -1,10 +1,11 @@
 package me.dylancurzon.pages.element;
 
 import me.dylancurzon.pages.element.container.MutableContainer;
+import me.dylancurzon.pages.event.bus.SimpleEventBus;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 
-public abstract class MutableElement {
+public abstract class MutableElement extends SimpleEventBus {
 
     protected final Spacing margin;
     protected MutableContainer parent;

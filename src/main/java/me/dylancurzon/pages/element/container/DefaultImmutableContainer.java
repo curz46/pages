@@ -57,6 +57,7 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
             .collect(Collectors.toList());
         MutableContainer container = new MutableContainer(margin, this, mutableElements);
         mutableElements.forEach(mut -> mut.setParent(container));
+        listeners.forEach(container::subscribe);
         return container;
     }
 

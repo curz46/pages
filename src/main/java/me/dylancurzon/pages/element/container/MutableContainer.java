@@ -52,9 +52,8 @@ public class MutableContainer extends MutableElement {
         positions.forEach((element, position) -> {
             if (element instanceof MutableContainer) {
                 Map<MutableElement, Vector2i> containerElements = ((MutableContainer) element).flatten();
-                containerElements.forEach((containerElement, containerPosition) -> {
-                    elements.put(containerElement, position.add(containerPosition));
-                });
+                containerElements.forEach((containerElement, containerPosition) ->
+                    elements.put(containerElement, position.add(containerPosition)));
             }
 
             elements.put(element, position);

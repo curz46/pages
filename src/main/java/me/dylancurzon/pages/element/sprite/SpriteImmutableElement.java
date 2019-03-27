@@ -27,7 +27,9 @@ public class SpriteImmutableElement extends ImmutableElement {
 
     @Override
     public MutableElement asMutable() {
-        return new SpriteMutableElement(margin, sprite);
+        SpriteMutableElement element = new SpriteMutableElement(margin, sprite);
+        listeners.forEach(element::subscribe);
+        return element;
     }
 
     public static class Builder extends ImmutableElement.Builder<SpriteImmutableElement, Builder> {
