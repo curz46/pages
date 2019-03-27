@@ -4,7 +4,6 @@ import me.dylancurzon.pages.elements.mutable.MutableContainer;
 import me.dylancurzon.pages.elements.mutable.MutableElement;
 import me.dylancurzon.pages.util.Vector2i;
 
-import java.util.List;
 import java.util.Map;
 
 public class Page extends MutableContainer {
@@ -28,8 +27,8 @@ public class Page extends MutableContainer {
     }
 
     @Override
-    public List<AlignedElement> draw() {
-        return container.draw();
+    public Map<MutableElement, Vector2i> flatten() {
+        return container.flatten();
     }
 
     public Map<MutableElement, Vector2i> getPositions() {

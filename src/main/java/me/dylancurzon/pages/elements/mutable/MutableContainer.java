@@ -1,7 +1,6 @@
 package me.dylancurzon.pages.elements.mutable;
 
 import com.sun.istack.internal.NotNull;
-import me.dylancurzon.pages.AlignedElement;
 import me.dylancurzon.pages.elements.container.ImmutableContainer;
 import me.dylancurzon.pages.elements.container.Positioning;
 import me.dylancurzon.pages.util.Cached;
@@ -11,7 +10,6 @@ import me.dylancurzon.pages.util.Vector2i;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static me.dylancurzon.pages.elements.container.Positioning.*;
 
@@ -41,24 +39,19 @@ public class MutableContainer extends MutableElement {
         return elements;
     }
 
-    public List<AlignedElement> draw() {
-        List<AlignedElement> elements = new ArrayList<>();
-        for (Map.Entry<MutableElement, Vector2i> entry : getPositions().entrySet()) {
-            MutableElement element = entry.getKey();
-            Vector2i position = entry.getValue();
+    public Map<MutableElement, Vector2i> flatten() {
+        Map<MutableElement, Vector2i> elements = new HashMap<>();
 
+        getPositions().forEach((element, position) -> {
             if (element instanceof MutableContainer) {
-                elements.addAll(
-                    ((MutableContainer) element).draw().stream()
-                        .map(containedElement -> new AlignedElement(
-                            containedElement.getElement(),
-                            position.add(containedElement.getPosition())
-                        ))
-                        .collect(Collectors.toList())
-                );
+                Map<MutableElement, Vector2i> containerElements = ((MutableContainer) element).flatten();
+                containerElements.forEach((containerElement, containerPosition) -> {
+                    elements.put(containerElement, position.add(containerPosition));
+                });
             }
-            elements.add(new AlignedElement(element, position));
-        }
+
+            elements.put(element, position);
+        });
 
         return elements;
     }
