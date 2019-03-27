@@ -11,6 +11,7 @@ public abstract class ImmutableElement {
 
     protected final Spacing margin;
     protected final Set<EventListener> listeners;
+    protected final Set<Consumer<MutableElement>> onCreate;
 
     protected ImmutableElement(Builder builder) {
         if (builder.margin == null) {
@@ -18,7 +19,8 @@ public abstract class ImmutableElement {
         } else {
             margin = builder.margin;
         }
-        listeners = builder.listeners;
+        listeners = new HashSet<>(builder.listeners);
+        onCreate = new HashSet<>(builder.onCreate);
     }
 
     public abstract MutableElement asMutable();
@@ -27,10 +29,11 @@ public abstract class ImmutableElement {
         return margin;
     }
 
-    public static abstract class Builder<T extends ImmutableElement, B extends Builder> {
+    public static abstract class Builder<T extends ImmutableElement, B extends Builder, M extends MutableElement> {
 
         protected Spacing margin;
         protected Set<EventListener> listeners = new HashSet<>();
+        protected Set<Consumer<M>> onCreate = new HashSet<>();
 
         public B setMargin(Spacing margin) {
             this.margin = margin;
@@ -43,6 +46,11 @@ public abstract class ImmutableElement {
          */
         public <K> B subscribe(Class<K> eventType, Consumer<K> consumer) {
             listeners.add(new EventListener<>(eventType, consumer));
+            return self();
+        }
+
+        public B doOnCreate(Consumer<M> consumer) {
+            onCreate.add(consumer);
             return self();
         }
 

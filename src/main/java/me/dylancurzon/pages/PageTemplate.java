@@ -1,8 +1,12 @@
 package me.dylancurzon.pages;
 
+import me.dylancurzon.pages.element.ImmutableElement;
+import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.element.container.DefaultImmutableContainer;
-import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.util.Vector2i;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PageTemplate extends DefaultImmutableContainer {
 
@@ -19,10 +23,16 @@ public class PageTemplate extends DefaultImmutableContainer {
 
     @Override
     public Page asMutable() {
-        MutableContainer container = super.asMutable();
-        Page page = new Page(this, container);
-        container.setParent(page);
+        // TODO: This code is copy-pasted from DefaultImmutableContainer, but I don't know how to abstract it
+        // Note: it's probably more effort than it's worth
+        List<MutableElement> mutableElements = elements.stream()
+            .map(fn -> fn.apply(this))
+            .map(ImmutableElement::asMutable)
+            .collect(Collectors.toList());
+        Page page = new Page(margin, this, mutableElements);
+        mutableElements.forEach(mut -> mut.setParent(page));
         listeners.forEach(page::subscribe);
+        onCreate.forEach(consumer -> consumer.accept(page));
         return page;
     }
 
@@ -30,7 +40,7 @@ public class PageTemplate extends DefaultImmutableContainer {
         return position;
     }
 
-    public static class Builder extends DefaultImmutableContainer.Builder<Builder> {
+    public static class Builder extends AbstractBuilder<Builder> {
 
         private Vector2i position = Vector2i.of(0, 0);
 

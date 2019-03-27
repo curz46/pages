@@ -1,6 +1,7 @@
 package me.dylancurzon.pages.element.container;
 
 import me.dylancurzon.pages.element.ImmutableElement;
+import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2d;
 import me.dylancurzon.pages.util.Vector2i;
@@ -26,7 +27,6 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
     protected final Color fillColor;
     private final Color lineColor;
     private final Integer lineWidth;
-
 
     private LayoutImmutableContainer(Builder builder) {
         super(builder);
@@ -54,7 +54,7 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
         int total = elements.stream()
             .map(Pair::getKey).mapToInt(Integer::intValue).sum();
         List<ImmutableElement> wrappedElements = elements.stream()
-            .map(pair -> DefaultImmutableContainer.builder()
+            .map(pair -> ImmutableContainer.builder()
                 .setCentering(centering)
                 .setSize((positioning == INLINE
                     ? size.toDouble().mul(Vector2d.of(((double) pair.getKey()) / total, 1))
@@ -63,7 +63,7 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
                 .add(pair.getValue())
                 .build())
             .collect(Collectors.toList());
-        return DefaultImmutableContainer.builder()
+        MutableContainer container = ImmutableContainer.builder()
             .setSize(size)
             .setPadding(padding)
             .setPositioning(positioning)
@@ -74,6 +74,9 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
             .add(wrappedElements)
             .build()
             .asMutable();
+        listeners.forEach(container::subscribe);
+        onCreate.forEach(consumer -> consumer.accept(container));
+        return container;
     }
 
     @Override
@@ -131,7 +134,7 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
         return Optional.ofNullable(lineWidth);
     }
 
-    public static class Builder extends ImmutableElement.Builder<LayoutImmutableContainer, Builder> {
+    public static class Builder extends ImmutableElement.Builder<LayoutImmutableContainer, Builder, MutableContainer> {
 
         private final List<Pair<Integer, Function<ImmutableContainer, ImmutableElement>>> elements = new ArrayList<>();
         private Vector2i size;

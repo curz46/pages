@@ -29,10 +29,11 @@ public class SpriteImmutableElement extends ImmutableElement {
     public MutableElement asMutable() {
         SpriteMutableElement element = new SpriteMutableElement(margin, sprite);
         listeners.forEach(element::subscribe);
+        onCreate.forEach(consumer -> consumer.accept(element));
         return element;
     }
 
-    public static class Builder extends ImmutableElement.Builder<SpriteImmutableElement, Builder> {
+    public static class Builder extends ImmutableElement.Builder<SpriteImmutableElement, Builder, SpriteMutableElement> {
 
         protected Sprite sprite;
 

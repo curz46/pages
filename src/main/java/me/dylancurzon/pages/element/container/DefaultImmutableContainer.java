@@ -24,11 +24,7 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
     private final Color lineColor;
     private final Integer lineWidth;
 
-    public static Builder builder() {
-        return new ContainerBuilder();
-    }
-
-    protected DefaultImmutableContainer(Builder builder) {
+    protected DefaultImmutableContainer(AbstractBuilder builder) {
         super(builder);
         elements = builder.elements;
         size = builder.size;
@@ -58,6 +54,7 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
         MutableContainer container = new MutableContainer(margin, this, mutableElements);
         mutableElements.forEach(mut -> mut.setParent(container));
         listeners.forEach(container::subscribe);
+        onCreate.forEach(consumer -> consumer.accept(container));
         return container;
     }
 
@@ -117,16 +114,16 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
         return positioning;
     }
 
-    public static class ContainerBuilder extends Builder<ContainerBuilder> {
+    public static class Builder extends AbstractBuilder<Builder> {
 
         @Override
-        public ContainerBuilder self() {
+        public Builder self() {
             return this;
         }
 
     }
 
-    public static abstract class Builder<T extends Builder> extends ImmutableElement.Builder<DefaultImmutableContainer, T> {
+    public static abstract class AbstractBuilder<T extends AbstractBuilder> extends ImmutableElement.Builder<ImmutableElement, T, MutableContainer> {
 
         protected final List<Function<ImmutableContainer, ImmutableElement>> elements = new ArrayList<>();
         protected Vector2i size;

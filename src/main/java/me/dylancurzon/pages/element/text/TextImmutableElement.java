@@ -21,6 +21,7 @@ public class TextImmutableElement extends ImmutableElement {
     public MutableElement asMutable() {
         TextMutableElement element = new TextMutableElement(margin, this);
         listeners.forEach(element::subscribe);
+        onCreate.forEach(consumer -> consumer.accept(element));
         return element;
     }
 
@@ -28,7 +29,7 @@ public class TextImmutableElement extends ImmutableElement {
         return sprite;
     }
 
-    public static class Builder extends ImmutableElement.Builder<TextImmutableElement, Builder> {
+    public static class Builder extends ImmutableElement.Builder<TextImmutableElement, Builder, TextMutableElement> {
 
         private TextSprite sprite;
 

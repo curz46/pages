@@ -8,6 +8,10 @@ import java.util.Optional;
 
 public interface ImmutableContainer {
 
+    static DefaultImmutableContainer.Builder builder() {
+        return new DefaultImmutableContainer.Builder();
+    }
+
     Spacing getMargin();
 
     Spacing getPadding();
