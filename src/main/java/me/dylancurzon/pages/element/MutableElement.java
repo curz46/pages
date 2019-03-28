@@ -5,6 +5,7 @@ import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.event.bus.SimpleEventBus;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -12,6 +13,8 @@ public abstract class MutableElement extends SimpleEventBus {
 
     protected final Spacing margin;
     protected MutableContainer parent;
+
+    protected Vector2i mousePosition = null;
 
     protected MutableElement(Spacing margin) {
         this.margin = margin;
@@ -35,6 +38,10 @@ public abstract class MutableElement extends SimpleEventBus {
         }
     }
 
+    public void setMousePosition(Vector2i mousePosition) {
+        this.mousePosition = mousePosition;
+    }
+
     public void setParent(MutableContainer parent) {
         this.parent = parent;
     }
@@ -50,6 +57,15 @@ public abstract class MutableElement extends SimpleEventBus {
                 margin.getBottom() + margin.getTop()
             )
         );
+    }
+
+    /**
+     * Get the position of the mouse relative to this {@link MutableElement}. If the mouse position is not within this
+     * element's bounds, then the value will be {@code null}.
+     */
+    @Nullable
+    public Vector2i getMousePosition() {
+        return mousePosition;
     }
 
     public MutableContainer getParent() {

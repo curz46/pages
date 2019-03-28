@@ -67,7 +67,29 @@ public class MutableContainer extends MutableElement {
         positions = computePositions();
         size = computeSize();
 
+        // Update the mouse position to recalculate the relative position for each child
+        setMousePosition(mousePosition);
+
         super.propagateUpdate();
+    }
+
+    @Override
+    public void setMousePosition(Vector2i mousePosition) {
+        super.setMousePosition(mousePosition);
+        // Now update children, relatively
+        positions.forEach((element, childPosition) -> {
+            Vector2i childSize = element.getSize();
+            if (mousePosition != null
+                && childPosition.getX() <= mousePosition.getX()
+                && childPosition.getY() <= mousePosition.getY()
+                && childPosition.getX() + childSize.getX() >= mousePosition.getX()
+                && childPosition.getY() + childSize.getY() >= mousePosition.getY()) {
+                // Within bounds and non-null, set the position
+                element.setMousePosition(mousePosition.sub(childPosition));
+            } else {
+                element.setMousePosition(null);
+            }
+        });
     }
 
     public Map<MutableElement, Vector2i> flatten() {
