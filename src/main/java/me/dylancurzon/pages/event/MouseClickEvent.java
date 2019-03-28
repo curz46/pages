@@ -1,13 +1,14 @@
 package me.dylancurzon.pages.event;
 
+import me.dylancurzon.pages.util.MouseButton;
 import me.dylancurzon.pages.util.Vector2i;
 
 public class MouseClickEvent {
 
     private final Vector2i position;
-    private final Button button;
+    private final MouseButton button;
 
-    public MouseClickEvent(Vector2i position, Button button) {
+    public MouseClickEvent(Vector2i position, MouseButton button) {
         this.position = position;
         this.button = button;
     }
@@ -16,7 +17,7 @@ public class MouseClickEvent {
         return position;
     }
 
-    public Button getButton() {
+    public MouseButton getButton() {
         return button;
     }
 
@@ -25,14 +26,6 @@ public class MouseClickEvent {
         return "MouseClickEvent{" +
             "position=" + position +
             ", button=" + button + "}";
-    }
-
-    public enum Button {
-
-        LEFT_MOUSE_BUTTON,
-        MIDDLE_MOUSE_BUTTON,
-        RIGHT_MOUSE_BUTTON
-
     }
 
 }

@@ -1,5 +1,6 @@
 package me.dylancurzon.pages.element;
 
+import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.event.bus.EventListener;
 import me.dylancurzon.pages.util.Spacing;
 
@@ -46,6 +47,15 @@ public abstract class ImmutableElement {
          */
         public <K> B subscribe(Class<K> eventType, Consumer<K> consumer) {
             listeners.add(new EventListener<>(eventType, consumer));
+            return self();
+        }
+
+        /**
+         * Equivalent to {@code Builder#subscribe(MouseClickEvent.class, consumer)}.
+         * @see Builder#subscribe(Class, Consumer)
+         */
+        public B doOnClick(Consumer<MouseClickEvent> consumer) {
+            subscribe(MouseClickEvent.class, consumer);
             return self();
         }
 

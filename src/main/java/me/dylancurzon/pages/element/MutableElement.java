@@ -1,9 +1,12 @@
 package me.dylancurzon.pages.element;
 
 import me.dylancurzon.pages.element.container.MutableContainer;
+import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.event.bus.SimpleEventBus;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
+
+import java.util.function.Consumer;
 
 public abstract class MutableElement extends SimpleEventBus {
 
@@ -12,6 +15,14 @@ public abstract class MutableElement extends SimpleEventBus {
 
     protected MutableElement(Spacing margin) {
         this.margin = margin;
+    }
+
+    /**
+     * Subscribes the given {@link Consumer} to the {@link MouseClickEvent} on this {@link MutableElement}.
+     * Equivalent to {@code MutableElement#subscribe(MouseClickEvent.class, consumer)}.
+     */
+    public void doOnClick(Consumer<MouseClickEvent> event) {
+        subscribe(MouseClickEvent.class, event);
     }
 
     /**
