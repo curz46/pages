@@ -13,7 +13,7 @@ import static me.dylancurzon.pages.element.container.Positioning.*;
 public class MutableContainer extends MutableElement {
 
     private final ImmutableContainer container;
-    private final List<MutableElement> elements;
+    private final List<MutableElement> children;
 
     private Vector2i size;
     private Map<MutableElement, Vector2i> positions;
@@ -22,10 +22,10 @@ public class MutableContainer extends MutableElement {
     private Color lineColor;
     private Integer lineWidth;
 
-    public MutableContainer(Spacing margin, ImmutableContainer container, List<MutableElement> elements) {
+    public MutableContainer(Spacing margin, ImmutableContainer container, List<MutableElement> children) {
         super(margin);
         this.container = container;
-        this.elements = elements;
+        this.children = children;
 
         fillColor = container.getFillColor().orElse(null);
         lineColor = container.getLineColor().orElse(null);
@@ -68,7 +68,7 @@ public class MutableContainer extends MutableElement {
         Vector2i size = container.getSize();
         if (size == null || size.getX() == -1 || size.getY() == -1) {
             Vector2i calculatedSize = Vector2i.of(0, 0);
-            for (MutableElement mut : elements) {
+            for (MutableElement mut : children) {
                 Vector2i elementSize = mut.getMarginedSize();
                 calculatedSize = calculatedSize.add(
                     container.getPositioning() == Positioning.INLINE
@@ -100,15 +100,15 @@ public class MutableContainer extends MutableElement {
     }
 
     /**
-     * @return A map of each MutableElement (in {@link this#elements} and its calculated position. It factors in
+     * @return A map of each MutableElement (in {@link this#children} and its calculated position. It factors in
      * if the {@link this#container} is centering, inline, padded and includes each MutableElement's margin.
      */
     private Map<MutableElement, Vector2i> computePositions() {
         Map<MutableElement, Vector2i> positions = new LinkedHashMap<>();
-        if (elements.isEmpty()) return positions;
+        if (children.isEmpty()) return positions;
 
         if (container.isCentering()) {
-            for (MutableElement mut : elements) {
+            for (MutableElement mut : children) {
                 Vector2i elementSize = mut.getSize();
 
                 // find centered position based on this container's size
@@ -124,7 +124,7 @@ public class MutableContainer extends MutableElement {
                     padding.getLeft(),
                     padding.getTop()
             );
-            for (MutableElement mut : elements) {
+            for (MutableElement mut : children) {
                 Vector2i delta =
                     Vector2i.of(mut.getMargin().getLeft(), mut.getMargin().getTop());
                 if (container.getPositioning() != OVERLAY) {
@@ -161,8 +161,8 @@ public class MutableContainer extends MutableElement {
         return Optional.ofNullable(lineWidth);
     }
 
-    public List<MutableElement> getElements() {
-        return elements;
+    public List<MutableElement> getChildren() {
+        return children;
     }
 
     public Map<MutableElement, Vector2i> getPositions() {
