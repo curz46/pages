@@ -152,7 +152,7 @@ public class Vector2i {
 
     @Override
     public String toString() {
-        return String.format("(%d, %d)", x, y);
+        return String.format("Vector2i{x=%d, y=%d}", x, y);
     }
 
 }

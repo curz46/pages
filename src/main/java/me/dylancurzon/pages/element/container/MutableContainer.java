@@ -1,6 +1,7 @@
 package me.dylancurzon.pages.element.container;
 
 import me.dylancurzon.pages.element.MutableElement;
+import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 
@@ -32,6 +33,29 @@ public class MutableContainer extends MutableElement {
         lineWidth = container.getLineWidth().orElse(null);
 
         positions = computePositions();
+
+        // Whenever this MutableContainer is clicked on, determine whether or not the event should be transferred to
+        // this container's children
+        subscribe(MouseClickEvent.class, event -> {
+            Vector2i position = event.getPosition();
+            positions.forEach((childElement, childPosition) -> {
+                // Check the bounds of this childElement
+                Vector2i childSize = childElement.getSize();
+                if (childPosition.getX() <= position.getX()
+                    && childPosition.getY() <= position.getY()
+                    && childPosition.getX() + childSize.getX() >= position.getX()
+                    && childPosition.getY() + childSize.getY() >= position.getY()) {
+                    // Within bounds
+                    MouseClickEvent childEvent = new MouseClickEvent(
+                        // Make Event relative to the child Element's position
+                        position.sub(childPosition),
+                        event.getButton()
+                    );
+                    // Post event
+                    childElement.post(childEvent);
+                }
+            });
+        });
     }
 
     /**

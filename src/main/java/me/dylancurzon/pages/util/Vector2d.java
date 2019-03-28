@@ -144,7 +144,7 @@ public class Vector2d {
 
     @Override
     public String toString() {
-        return String.format("(%f, %f)", x, y);
+        return String.format("Vector2d{x=%f, y=%f}", x, y);
     }
 
 }
