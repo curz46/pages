@@ -19,7 +19,7 @@ public class TextImmutableElement extends ImmutableElement {
 
     @Override
     public MutableElement asMutable() {
-        TextMutableElement element = new TextMutableElement(margin, this);
+        TextMutableElement element = new TextMutableElement(margin, tag, this);
         listeners.forEach(element::subscribe);
         onCreate.forEach(consumer -> consumer.accept(element));
         return element;

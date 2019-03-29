@@ -16,8 +16,8 @@ public class Page extends MutableContainer {
     private Vector2i position;
     private Vector2i mousePosition = null;
 
-    public Page(Spacing margin, PageTemplate template, List<MutableElement> elements) {
-        super(margin, template, elements);
+    public Page(Spacing margin, String tag, PageTemplate template, List<MutableElement> elements) {
+        super(margin, tag, template, elements);
         this.template = template;
     }
 

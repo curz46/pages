@@ -9,8 +9,8 @@ public class SpriteMutableElement extends MutableElement {
 
     protected Sprite sprite;
 
-    public SpriteMutableElement(Spacing margin, Sprite sprite) {
-        super(margin);
+    public SpriteMutableElement(Spacing margin, String tag, Sprite sprite) {
+        super(margin, tag);
         this.sprite = sprite;
     }
 

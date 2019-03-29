@@ -10,8 +10,8 @@ public class TextMutableElement extends MutableElement {
     private final TextImmutableElement immutableElement;
     private TextSprite sprite;
 
-    public TextMutableElement(Spacing margin, TextImmutableElement immutableElement) {
-        super(margin);
+    public TextMutableElement(Spacing margin, String tag, TextImmutableElement immutableElement) {
+        super(margin, tag);
         this.immutableElement = immutableElement;
         sprite = this.immutableElement.getSprite();
     }

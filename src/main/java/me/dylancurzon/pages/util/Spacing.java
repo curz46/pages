@@ -45,4 +45,13 @@ public class Spacing {
         return bottom;
     }
 
+    @Override
+    public String toString() {
+        return "Spacing{" +
+            left +
+            ", " + top +
+            ", " + right +
+            ", " + bottom + "}";
+    }
+
 }

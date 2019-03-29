@@ -23,8 +23,8 @@ public class MutableContainer extends MutableElement {
     private Color lineColor;
     private Integer lineWidth;
 
-    public MutableContainer(Spacing margin, ImmutableContainer container, List<MutableElement> children) {
-        super(margin);
+    public MutableContainer(Spacing margin, String tag, ImmutableContainer container, List<MutableElement> children) {
+        super(margin, tag);
         this.container = container;
         this.children = children;
 

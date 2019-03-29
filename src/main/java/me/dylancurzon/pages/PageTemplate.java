@@ -29,7 +29,7 @@ public class PageTemplate extends DefaultImmutableContainer {
             .map(fn -> fn.apply(this))
             .map(ImmutableElement::asMutable)
             .collect(Collectors.toList());
-        Page page = new Page(margin, this, mutableElements);
+        Page page = new Page(margin, tag, this, mutableElements);
         mutableElements.forEach(mut -> mut.setParent(page));
         listeners.forEach(page::subscribe);
         onCreate.forEach(consumer -> consumer.accept(page));

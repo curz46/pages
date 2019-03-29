@@ -27,7 +27,7 @@ public class SpriteImmutableElement extends ImmutableElement {
 
     @Override
     public MutableElement asMutable() {
-        SpriteMutableElement element = new SpriteMutableElement(margin, sprite);
+        SpriteMutableElement element = new SpriteMutableElement(margin, tag, sprite);
         listeners.forEach(element::subscribe);
         onCreate.forEach(consumer -> consumer.accept(element));
         return element;
