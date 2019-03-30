@@ -1,16 +1,22 @@
 package me.dylancurzon.pages.element.sprite;
 
 import me.dylancurzon.pages.element.MutableElement;
+import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Sprite;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.Nullable;
 
 public class SpriteMutableElement extends MutableElement {
 
     protected Sprite sprite;
 
-    public SpriteMutableElement(Spacing margin, String tag, Sprite sprite) {
-        super(margin, tag);
+    public SpriteMutableElement(@Nullable MutableContainer parent,
+                                Spacing margin,
+                                @Nullable String tag,
+                                @Nullable Integer zPosition,
+                                Sprite sprite) {
+        super(parent, margin, tag, zPosition);
         this.sprite = sprite;
     }
 

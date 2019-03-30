@@ -3,9 +3,11 @@ package me.dylancurzon.pages;
 import me.dylancurzon.pages.element.ImmutableElement;
 import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.element.container.DefaultImmutableContainer;
+import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.util.Vector2i;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class PageTemplate extends DefaultImmutableContainer {
@@ -21,19 +23,29 @@ public class PageTemplate extends DefaultImmutableContainer {
         return new Builder();
     }
 
-    @Override
-    public Page asMutable() {
-        // TODO: This code is copy-pasted from DefaultImmutableContainer, but I don't know how to abstract it
-        // Note: it's probably more effort than it's worth
-        List<MutableElement> mutableElements = elements.stream()
-            .map(fn -> fn.apply(this))
-            .map(ImmutableElement::asMutable)
-            .collect(Collectors.toList());
-        Page page = new Page(margin, tag, this, mutableElements);
-        mutableElements.forEach(mut -> mut.setParent(page));
-        listeners.forEach(page::subscribe);
-        onCreate.forEach(consumer -> consumer.accept(page));
-        return page;
+    // TODO: Maybe this shouldn't be public?
+    public Function<MutableContainer, MutableElement> asMutable() {
+        return parent -> {
+            Page page = new Page(margin, tag, zPosition, this);
+            List<MutableElement> children = elements.stream()
+                .map(fn -> fn.apply(this))
+                .map(element -> element.asMutable(page))
+                .collect(Collectors.toList());
+            page.getChildren().addAll(children);
+
+            listeners.forEach(page::subscribe);
+            onCreate.forEach(consumer -> consumer.accept(page));
+
+            return page;
+        };
+    }
+
+    /**
+     * Creates a {@link Page} by recursively calling {@link ImmutableElement#asMutable} such that the tree is replicated
+     * as a {@link MutableElement}.
+     */
+    public Page create() {
+        return (Page) asMutable().apply(null);
     }
 
     public Vector2i getPosition() {

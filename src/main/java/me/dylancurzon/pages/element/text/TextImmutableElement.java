@@ -2,7 +2,10 @@ package me.dylancurzon.pages.element.text;
 
 import me.dylancurzon.pages.element.ImmutableElement;
 import me.dylancurzon.pages.element.MutableElement;
+import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.util.TextSprite;
+
+import java.util.function.Function;
 
 public class TextImmutableElement extends ImmutableElement {
 
@@ -18,11 +21,13 @@ public class TextImmutableElement extends ImmutableElement {
     }
 
     @Override
-    public MutableElement asMutable() {
-        TextMutableElement element = new TextMutableElement(margin, tag, this);
-        listeners.forEach(element::subscribe);
-        onCreate.forEach(consumer -> consumer.accept(element));
-        return element;
+    public Function<MutableContainer, MutableElement> asMutable() {
+        return parent -> {
+            TextMutableElement element = new TextMutableElement(parent, margin, tag, zPosition, this);
+            listeners.forEach(element::subscribe);
+            onCreate.forEach(consumer -> consumer.accept(element));
+            return element;
+        };
     }
 
     public TextSprite getSprite() {

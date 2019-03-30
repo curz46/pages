@@ -46,16 +46,20 @@ public class DefaultImmutableContainer extends ImmutableElement implements Immut
     }
 
     @Override
-    public MutableContainer asMutable() {
-        List<MutableElement> mutableElements = elements.stream()
-            .map(fn -> fn.apply(this))
-            .map(ImmutableElement::asMutable)
-            .collect(Collectors.toList());
-        MutableContainer container = new MutableContainer(margin, tag, this, mutableElements);
-        mutableElements.forEach(mut -> mut.setParent(container));
-        listeners.forEach(container::subscribe);
-        onCreate.forEach(consumer -> consumer.accept(container));
-        return container;
+    public Function<MutableContainer, MutableElement> asMutable() {
+        return parent -> {
+            MutableContainer container = new MutableContainer(parent, margin, tag, zPosition, this);
+            List<MutableElement> children = elements.stream()
+                .map(fn -> fn.apply(this))
+                .map(element -> element.asMutable(container))
+                .collect(Collectors.toList());
+            container.getChildren().addAll(children);
+
+            listeners.forEach(container::subscribe);
+            onCreate.forEach(consumer -> consumer.accept(container));
+
+            return container;
+        };
     }
 
     public List<Function<ImmutableContainer, ImmutableElement>> getElements() {

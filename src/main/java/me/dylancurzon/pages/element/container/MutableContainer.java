@@ -5,6 +5,7 @@ import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.event.TickEvent;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.List;
@@ -14,8 +15,10 @@ import static me.dylancurzon.pages.element.container.Positioning.*;
 
 public class MutableContainer extends MutableElement {
 
+    // TODO: References to the ImmutableX should be completely removed, since otherwise it makes these properties
+    // immutable. Positioning, for example, should be modifiable after Page construction
     private final ImmutableContainer container;
-    private final List<MutableElement> children;
+    private final List<MutableElement> children = new ArrayList<>();
 
     private Vector2i size;
     private Map<MutableElement, Vector2i> positions;
@@ -24,10 +27,13 @@ public class MutableContainer extends MutableElement {
     private Color lineColor;
     private Integer lineWidth;
 
-    public MutableContainer(Spacing margin, String tag, ImmutableContainer container, List<MutableElement> children) {
-        super(margin, tag);
+    public MutableContainer(@Nullable MutableContainer parent,
+                            Spacing margin,
+                            @Nullable String tag,
+                            @Nullable Integer zPosition,
+                            ImmutableContainer container) {
+        super(parent, margin, tag, zPosition);
         this.container = container;
-        this.children = children;
 
         fillColor = container.getFillColor().orElse(null);
         lineColor = container.getLineColor().orElse(null);

@@ -50,33 +50,35 @@ public class LayoutImmutableContainer extends ImmutableElement implements Immuta
     }
 
     @Override
-    public MutableContainer asMutable() {
-        int total = elements.stream()
-            .map(Pair::getKey).mapToInt(Integer::intValue).sum();
-        List<ImmutableElement> wrappedElements = elements.stream()
-            .map(pair -> ImmutableContainer.builder()
-                .setCentering(centering)
-                .setSize((positioning == INLINE
-                    ? size.toDouble().mul(Vector2d.of(((double) pair.getKey()) / total, 1))
-                    : size.toDouble().mul(Vector2d.of(1, ((double) pair.getKey()) / total)))
-                    .ceil().toInt())
-                .add(pair.getValue())
-                .build())
-            .collect(Collectors.toList());
-        MutableContainer container = ImmutableContainer.builder()
-            .setSize(size)
-            .setPadding(padding)
-            .setPositioning(positioning)
-            .setScrollable(scrollable)
-            .setFillColor(fillColor)
-            .setLineColor(lineColor)
-            .setLineWidth(lineWidth)
-            .add(wrappedElements)
-            .build()
-            .asMutable();
-        listeners.forEach(container::subscribe);
-        onCreate.forEach(consumer -> consumer.accept(container));
-        return container;
+    public Function<MutableContainer, MutableElement> asMutable() {
+        return parent -> {
+            int total = elements.stream()
+                .map(Pair::getKey).mapToInt(Integer::intValue).sum();
+            List<ImmutableElement> wrappedElements = elements.stream()
+                .map(pair -> ImmutableContainer.builder()
+                    .setCentering(centering)
+                    .setSize((positioning == INLINE
+                        ? size.toDouble().mul(Vector2d.of(((double) pair.getKey()) / total, 1))
+                        : size.toDouble().mul(Vector2d.of(1, ((double) pair.getKey()) / total)))
+                        .ceil().toInt())
+                    .add(pair.getValue())
+                    .build())
+                .collect(Collectors.toList());
+            MutableContainer container = (MutableContainer) ImmutableContainer.builder()
+                .setSize(size)
+                .setPadding(padding)
+                .setPositioning(positioning)
+                .setScrollable(scrollable)
+                .setFillColor(fillColor)
+                .setLineColor(lineColor)
+                .setLineWidth(lineWidth)
+                .add(wrappedElements)
+                .build()
+                .asMutable(parent);
+            listeners.forEach(container::subscribe);
+            onCreate.forEach(consumer -> consumer.accept(container));
+            return container;
+        };
     }
 
     @Override

@@ -2,7 +2,10 @@ package me.dylancurzon.pages.element.sprite;
 
 import me.dylancurzon.pages.element.ImmutableElement;
 import me.dylancurzon.pages.element.MutableElement;
+import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.util.Sprite;
+
+import java.util.function.Function;
 
 public class SpriteImmutableElement extends ImmutableElement {
 
@@ -26,11 +29,13 @@ public class SpriteImmutableElement extends ImmutableElement {
     }
 
     @Override
-    public MutableElement asMutable() {
-        SpriteMutableElement element = new SpriteMutableElement(margin, tag, sprite);
-        listeners.forEach(element::subscribe);
-        onCreate.forEach(consumer -> consumer.accept(element));
-        return element;
+    public Function<MutableContainer, MutableElement> asMutable() {
+        return parent -> {
+            SpriteMutableElement element = new SpriteMutableElement(parent, margin, tag, zPosition, sprite);
+            listeners.forEach(element::subscribe);
+            onCreate.forEach(consumer -> consumer.accept(element));
+            return element;
+        };
     }
 
     public static class Builder extends ImmutableElement.Builder<SpriteImmutableElement, Builder, SpriteMutableElement> {

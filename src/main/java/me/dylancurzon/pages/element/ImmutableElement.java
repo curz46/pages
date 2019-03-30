@@ -1,5 +1,6 @@
 package me.dylancurzon.pages.element;
 
+import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.event.MouseHoverEvent;
 import me.dylancurzon.pages.event.TickEvent;
@@ -10,13 +11,18 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public abstract class ImmutableElement {
 
     protected final Spacing margin;
+    @Nullable
+    protected final String tag;
+    @Nullable
+    protected final Integer zPosition;
+
     protected final Set<EventListener> listeners;
     protected final Set<Consumer<MutableElement>> onCreate;
-    protected final String tag;
 
     protected ImmutableElement(Builder builder) {
         if (builder.margin == null) {
@@ -24,12 +30,18 @@ public abstract class ImmutableElement {
         } else {
             margin = builder.margin;
         }
+        tag = builder.tag;
+        zPosition = builder.zPosition;
+
         listeners = new HashSet<>(builder.listeners);
         onCreate = new HashSet<>(builder.onCreate);
-        tag = builder.tag;
     }
 
-    public abstract MutableElement asMutable();
+    public MutableElement asMutable(MutableContainer parent) {
+        return asMutable().apply(parent);
+    }
+
+    public abstract Function<MutableContainer, MutableElement> asMutable();
 
     public Spacing getMargin() {
         return margin;
@@ -54,9 +66,20 @@ public abstract class ImmutableElement {
         protected Set<EventListener> listeners = new HashSet<>();
         protected Set<Consumer<M>> onCreate = new HashSet<>();
         protected String tag;
+        protected Integer zPosition;
 
         public B setMargin(Spacing margin) {
             this.margin = margin;
+            return self();
+        }
+
+        public B setTag(String tag) {
+            this.tag = tag;
+            return self();
+        }
+
+        public B setZ(Integer zPosition) {
+            this.zPosition = zPosition;
             return self();
         }
 
@@ -120,11 +143,6 @@ public abstract class ImmutableElement {
          */
         public B doOnCreate(Consumer<M> consumer) {
             onCreate.add(consumer);
-            return self();
-        }
-
-        public B setTag(String tag) {
-            this.tag = tag;
             return self();
         }
 

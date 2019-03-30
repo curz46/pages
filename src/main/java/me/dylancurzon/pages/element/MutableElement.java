@@ -9,20 +9,38 @@ import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public abstract class MutableElement extends SimpleEventBus {
 
     protected final Spacing margin;
+    @Nullable
     protected final String tag;
+    protected int zPosition;
 
+    @Nullable
     protected MutableContainer parent;
 
     protected Vector2i mousePosition = null;
 
-    protected MutableElement(Spacing margin, String tag) {
-        this.margin = margin;
+    protected MutableElement(@Nullable MutableContainer parent, Spacing margin, @Nullable String tag, @Nullable Integer zPosition) {
+        this.margin = Objects.requireNonNull(margin);
         this.tag = tag;
+
+        if (zPosition == null) {
+            if (parent == null) {
+                throw new IllegalArgumentException("if no parent specified, must provide a Z position");
+            }
+
+            // Add one to parent by default
+            this.zPosition = parent.getZ() + 1;
+        } else {
+            this.zPosition = zPosition;
+
+        }
+
+        this.parent = parent;
     }
 
     /**
@@ -101,6 +119,10 @@ public abstract class MutableElement extends SimpleEventBus {
     @Nullable
     public String getTag() {
         return tag;
+    }
+
+    public int getZ() {
+        return zPosition;
     }
 
     public Vector2i getMarginedSize() {
