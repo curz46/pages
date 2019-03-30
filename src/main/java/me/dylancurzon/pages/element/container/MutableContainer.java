@@ -2,6 +2,7 @@ package me.dylancurzon.pages.element.container;
 
 import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.event.MouseClickEvent;
+import me.dylancurzon.pages.event.TickEvent;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 
@@ -55,6 +56,13 @@ public class MutableContainer extends MutableElement {
                     childElement.post(childEvent);
                 }
             });
+        });
+
+        // Whenever this MutableContainer is "ticked", forward it
+        subscribe(TickEvent.class, event -> {
+            for (MutableElement element : children) {
+                element.post(event);
+            }
         });
     }
 

@@ -3,12 +3,12 @@ package me.dylancurzon.pages.element;
 import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.event.MouseHoverEvent;
+import me.dylancurzon.pages.event.TickEvent;
 import me.dylancurzon.pages.event.bus.SimpleEventBus;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public abstract class MutableElement extends SimpleEventBus {
@@ -47,6 +47,22 @@ public abstract class MutableElement extends SimpleEventBus {
      */
     public void doOnHoverEnd(Consumer<MouseHoverEvent.End> consumer) {
         subscribe(MouseHoverEvent.End.class, consumer);
+    }
+
+    /**
+     * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
+     * @see ImmutableElement.Builder#subscribe(Class, Consumer)
+     */
+    public void doOnTick(Consumer<TickEvent> consumer) {
+        subscribe(TickEvent.class, consumer);
+    }
+
+    /**
+     * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
+     * @see ImmutableElement.Builder#subscribe(Class, Consumer)
+     */
+    public void doOnTick(Runnable runnable) {
+        doOnTick(event -> runnable.run());
     }
 
     /**

@@ -2,6 +2,7 @@ package me.dylancurzon.pages.element;
 
 import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.event.MouseHoverEvent;
+import me.dylancurzon.pages.event.TickEvent;
 import me.dylancurzon.pages.event.bus.EventListener;
 import me.dylancurzon.pages.util.Spacing;
 import org.jetbrains.annotations.Nullable;
@@ -93,6 +94,23 @@ public abstract class ImmutableElement {
         public B doOnHoverEnd(Consumer<MouseHoverEvent.End> consumer) {
             subscribe(MouseHoverEvent.End.class, consumer);
             return self();
+        }
+
+        /**
+         * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
+         * @see Builder#subscribe(Class, Consumer)
+         */
+        public B doOnTick(Consumer<TickEvent> consumer) {
+            subscribe(TickEvent.class, consumer);
+            return self();
+        }
+
+        /**
+         * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
+         * @see Builder#subscribe(Class, Consumer)
+         */
+        public B doOnTick(Runnable runnable) {
+            return doOnTick(event -> runnable.run());
         }
 
         /**

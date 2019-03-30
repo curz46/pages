@@ -3,6 +3,7 @@ package me.dylancurzon.pages;
 import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.event.MouseClickEvent;
+import me.dylancurzon.pages.event.TickEvent;
 import me.dylancurzon.pages.util.MouseButton;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
@@ -23,6 +24,10 @@ public class Page extends MutableContainer {
 
     public void click(Vector2i position, MouseButton button) {
         post(new MouseClickEvent(position, button));
+    }
+
+    public void tick() {
+        post(new TickEvent());
     }
 
     public Vector2i getPosition() {
