@@ -9,6 +9,7 @@ import me.dylancurzon.pages.util.Spacing;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -21,6 +22,8 @@ public abstract class ImmutableElement {
     @Nullable
     protected final Integer zPosition;
 
+    protected final ElementDecoration decoration;
+
     protected final Set<EventListener> listeners;
     protected final Set<Consumer<MutableElement>> onCreate;
 
@@ -32,6 +35,7 @@ public abstract class ImmutableElement {
         }
         tag = builder.tag;
         zPosition = builder.zPosition;
+        decoration = Objects.requireNonNull(builder.decoration);
 
         listeners = new HashSet<>(builder.listeners);
         onCreate = new HashSet<>(builder.onCreate);
@@ -67,6 +71,7 @@ public abstract class ImmutableElement {
         protected Set<Consumer<M>> onCreate = new HashSet<>();
         protected String tag;
         protected Integer zPosition;
+        protected ElementDecoration decoration = ElementDecoration.empty();
 
         public B setMargin(Spacing margin) {
             this.margin = margin;
@@ -83,6 +88,11 @@ public abstract class ImmutableElement {
             return self();
         }
 
+        public B setDecoration(ElementDecoration decoration) {
+            this.decoration = decoration;
+            return self();
+        }
+
         /**
          * Adds a listener to this {@link Builder} which will be subscribed on the {@link MutableElement} upon
          * construction.
@@ -93,7 +103,7 @@ public abstract class ImmutableElement {
         }
 
         /**
-         * Equivalent to {@code Builder#subscribe(MouseClickEvent.class, consumer)}.
+         * Equivalent to {@code AbstractBuilder#subscribe(MouseClickEvent.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */
         public B doOnClick(Consumer<MouseClickEvent> consumer) {
@@ -102,7 +112,7 @@ public abstract class ImmutableElement {
         }
 
         /**
-         * Equivalent to {@code Builder#subscribe(MouseHoverEnd.Start.class, consumer)}.
+         * Equivalent to {@code AbstractBuilder#subscribe(MouseHoverEnd.Start.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */
         public B doOnHoverStart(Consumer<MouseHoverEvent.Start> consumer) {
@@ -111,7 +121,7 @@ public abstract class ImmutableElement {
         }
 
         /**
-         * Equivalent to {@code Builder#subscribe(MouseHoverEvent.End.class, consumer)}.
+         * Equivalent to {@code AbstractBuilder#subscribe(MouseHoverEvent.End.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */
         public B doOnHoverEnd(Consumer<MouseHoverEvent.End> consumer) {
@@ -120,7 +130,7 @@ public abstract class ImmutableElement {
         }
 
         /**
-         * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
+         * Equivalent to {@code AbstractBuilder#subscribe(TickEvent.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */
         public B doOnTick(Consumer<TickEvent> consumer) {
@@ -129,7 +139,7 @@ public abstract class ImmutableElement {
         }
 
         /**
-         * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
+         * Equivalent to {@code AbstractBuilder#subscribe(TickEvent.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */
         public B doOnTick(Runnable runnable) {

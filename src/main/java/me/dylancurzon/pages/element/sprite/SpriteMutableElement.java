@@ -1,5 +1,6 @@
 package me.dylancurzon.pages.element.sprite;
 
+import me.dylancurzon.pages.element.ElementDecoration;
 import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.util.Spacing;
@@ -15,8 +16,9 @@ public class SpriteMutableElement extends MutableElement {
                                 Spacing margin,
                                 @Nullable String tag,
                                 @Nullable Integer zPosition,
-                                Sprite sprite) {
-        super(parent, margin, tag, zPosition);
+                                Sprite sprite,
+                                ElementDecoration decoration) {
+        super(parent, margin, tag, zPosition, decoration);
         this.sprite = sprite;
     }
 

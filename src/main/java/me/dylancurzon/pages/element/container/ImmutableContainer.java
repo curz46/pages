@@ -1,35 +1,66 @@
 package me.dylancurzon.pages.element.container;
 
-import me.dylancurzon.pages.util.Spacing;
+import me.dylancurzon.pages.element.ImmutableElement;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.util.List;
 import java.util.Optional;
 
-public interface ImmutableContainer {
+public abstract class ImmutableContainer extends ImmutableElement {
 
-    static DefaultImmutableContainer.Builder builder() {
-        return new DefaultImmutableContainer.Builder();
+    @Nullable
+    protected final Vector2i fixedSize;
+    @Nullable
+    protected final Vector2i minimumSize;
+    @Nullable
+    protected final Vector2i maximumSize;
+
+    protected ImmutableContainer(Builder builder) {
+        super(builder);
+        fixedSize = builder.fixedSize;
+        minimumSize = builder.minimumSize;
+        maximumSize = builder.maximumSize;
     }
 
-    Spacing getMargin();
+    public abstract List<ImmutableElement> getChildren();
 
-    Spacing getPadding();
+    public Optional<Vector2i> getFixedSize() {
+        return Optional.ofNullable(fixedSize);
+    }
 
-    Vector2i getSize();
+    public Optional<Vector2i> getMinimumSize() {
+        return Optional.ofNullable(minimumSize);
+    }
 
-    Vector2i getMarginedSize();
+    public Optional<Vector2i> getMaximumSize() {
+        return Optional.ofNullable(maximumSize);
+    }
 
-    Vector2i getPaddedSize();
+    public static abstract class Builder<
+        T extends ImmutableContainer,
+        B extends Builder,
+        M extends MutableContainer> extends ImmutableElement.Builder<T, B, M> {
 
-    boolean isCentering();
+        protected Vector2i fixedSize;
+        protected Vector2i minimumSize;
+        protected Vector2i maximumSize;
 
-    Positioning getPositioning();
+        public B setMinimumSize(Vector2i minimumSize) {
+            this.minimumSize = minimumSize;
+            return self();
+        }
 
-    Optional<Color> getFillColor();
+        public B setMaximumSize(Vector2i maximumSize) {
+            this.maximumSize = maximumSize;
+            return self();
+        }
 
-    Optional<Color> getLineColor();
+        public B setFixedSize(Vector2i fixedSize) {
+            this.fixedSize = fixedSize;
+            return self();
+        }
 
-    Optional<Integer> getLineWidth();
+    }
 
 }

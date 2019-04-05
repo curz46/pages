@@ -16,14 +16,10 @@ public class TextImmutableElement extends ImmutableElement {
         sprite = builder.sprite;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     @Override
     public Function<MutableContainer, MutableElement> asMutable() {
         return parent -> {
-            TextMutableElement element = new TextMutableElement(parent, margin, tag, zPosition, this);
+            TextMutableElement element = new TextMutableElement(parent, margin, tag, zPosition, this, decoration);
             listeners.forEach(element::subscribe);
             onCreate.forEach(consumer -> consumer.accept(element));
             return element;

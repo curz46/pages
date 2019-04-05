@@ -22,9 +22,15 @@ public abstract class MutableElement extends SimpleEventBus {
     @Nullable
     protected MutableContainer parent;
 
+    protected ElementDecoration decoration;
+
     protected Vector2i mousePosition = null;
 
-    protected MutableElement(@Nullable MutableContainer parent, Spacing margin, @Nullable String tag, @Nullable Integer zPosition) {
+    protected MutableElement(@Nullable MutableContainer parent,
+                             Spacing margin,
+                             @Nullable String tag,
+                             @Nullable Integer zPosition,
+                             ElementDecoration decoration) {
         this.margin = Objects.requireNonNull(margin);
         this.tag = tag;
 
@@ -40,12 +46,14 @@ public abstract class MutableElement extends SimpleEventBus {
 
         }
 
+        this.decoration = Objects.requireNonNull(decoration);
+
         this.parent = parent;
     }
 
     /**
      * Subscribes the given {@link Consumer} to the {@link MouseClickEvent} on this {@link MutableElement}.
-     * Equivalent to {@code MutableElement#subscribe(MouseClickEvent.class, consumer)}.
+     * Equivalent to {@code Builder#subscribe(MouseClickEvent.class, consumer)}.
      */
     public void doOnClick(Consumer<MouseClickEvent> event) {
         subscribe(MouseClickEvent.class, event);
@@ -123,6 +131,10 @@ public abstract class MutableElement extends SimpleEventBus {
 
     public int getZ() {
         return zPosition;
+    }
+
+    public ElementDecoration getDecoration() {
+        return decoration;
     }
 
     public Vector2i getMarginedSize() {

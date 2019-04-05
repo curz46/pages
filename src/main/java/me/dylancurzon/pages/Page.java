@@ -1,6 +1,8 @@
 package me.dylancurzon.pages;
 
-import me.dylancurzon.pages.element.container.MutableContainer;
+import me.dylancurzon.pages.element.container.Axis;
+import me.dylancurzon.pages.element.ElementDecoration;
+import me.dylancurzon.pages.element.container.MutableStackingContainer;
 import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.event.TickEvent;
 import me.dylancurzon.pages.util.MouseButton;
@@ -8,16 +10,28 @@ import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
-public class Page extends MutableContainer {
-
-    private final PageTemplate template;
+public class Page extends MutableStackingContainer {
 
     private Vector2i position;
     private Vector2i mousePosition = null;
 
-    public Page(Spacing margin, @Nullable String tag, @Nullable Integer zPosition, PageTemplate template) {
-        super(null, margin, tag, zPosition == null ? 0 : zPosition, template);
-        this.template = template;
+    public Page(Spacing margin,
+                @Nullable String tag,
+                @Nullable Integer zPosition,
+                @Nullable Axis majorAxis,
+                @Nullable Vector2i fixedSize,
+                ElementDecoration decoration) {
+        super(
+            null,
+            margin,
+            tag,
+            zPosition == null ? 0 : zPosition,
+            majorAxis == null ? Axis.VERTICAL : majorAxis,
+            fixedSize,
+            null,
+            null,
+            decoration
+        );
     }
 
     public void click(Vector2i position, MouseButton button) {

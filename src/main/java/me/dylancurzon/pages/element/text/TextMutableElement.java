@@ -1,5 +1,6 @@
 package me.dylancurzon.pages.element.text;
 
+import me.dylancurzon.pages.element.ElementDecoration;
 import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.util.Spacing;
@@ -16,8 +17,9 @@ public class TextMutableElement extends MutableElement {
                               Spacing margin,
                               @Nullable String tag,
                               @Nullable Integer zPosition,
-                              TextImmutableElement immutableElement) {
-        super(parent, margin, tag, zPosition);
+                              TextImmutableElement immutableElement,
+                              ElementDecoration decoration) {
+        super(parent, margin, tag, zPosition, decoration);
         this.immutableElement = immutableElement;
         sprite = this.immutableElement.getSprite();
     }

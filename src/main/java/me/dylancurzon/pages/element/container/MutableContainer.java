@@ -1,5 +1,6 @@
 package me.dylancurzon.pages.element.container;
 
+import me.dylancurzon.pages.element.ElementDecoration;
 import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.event.TickEvent;
@@ -7,45 +8,48 @@ import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 
-import static me.dylancurzon.pages.element.container.Positioning.*;
+public abstract class MutableContainer extends MutableElement {
 
-public class MutableContainer extends MutableElement {
+//    protected final List<MutableElement> children = new ArrayList<>();
 
-    // TODO: References to the ImmutableX should be completely removed, since otherwise it makes these properties
-    // immutable. Positioning, for example, should be modifiable after Page construction
-    private final ImmutableContainer container;
-    private final List<MutableElement> children = new ArrayList<>();
+    protected Vector2i size;
+    protected Map<MutableElement, Vector2i> positions;
 
-    private Vector2i size;
-    private Map<MutableElement, Vector2i> positions;
+    @Nullable
+    protected Vector2i fixedSize;
+    @Nullable
+    protected Vector2i minimumSize;
+    @Nullable
+    protected Vector2i maximumSize;
 
-    private Color fillColor;
-    private Color lineColor;
-    private Integer lineWidth;
 
     public MutableContainer(@Nullable MutableContainer parent,
                             Spacing margin,
                             @Nullable String tag,
                             @Nullable Integer zPosition,
-                            ImmutableContainer container) {
-        super(parent, margin, tag, zPosition);
-        this.container = container;
+                            @Nullable Vector2i fixedSize,
+                            @Nullable Vector2i minimumSize,
+                            @Nullable Vector2i maximumSize,
+                            ElementDecoration decoration) {
+        super(parent, margin, tag, zPosition, decoration);
 
-        fillColor = container.getFillColor().orElse(null);
-        lineColor = container.getLineColor().orElse(null);
-        lineWidth = container.getLineWidth().orElse(null);
+        // Since it's not possible for there to be any children at this point, don't do this
+//        positions = computePositions();
 
-        positions = computePositions();
+        this.fixedSize = fixedSize;
+        this.minimumSize = minimumSize;
+        this.maximumSize = maximumSize;
 
         // Whenever this MutableContainer is clicked on, determine whether or not the event should be transferred to
         // this container's children
         subscribe(MouseClickEvent.class, event -> {
             Vector2i position = event.getPosition();
-            positions.forEach((childElement, childPosition) -> {
+
+            getPositions().forEach((childElement, childPosition) -> {
                 // Check the bounds of this childElement
                 Vector2i childSize = childElement.getSize();
                 if (childPosition.getX() <= position.getX()
@@ -66,7 +70,7 @@ public class MutableContainer extends MutableElement {
 
         // Whenever this MutableContainer is "ticked", forward it
         subscribe(TickEvent.class, event -> {
-            for (MutableElement element : children) {
+            for (MutableElement element : getChildren()) {
                 element.post(event);
             }
         });
@@ -123,36 +127,47 @@ public class MutableContainer extends MutableElement {
     }
 
     public Vector2i computeSize() {
-        // TODO: Properties accessed here should be replicated in this Object, not referenced.
-        // This allows users to mutate the properties if desired
-        Vector2i size = container.getSize();
-        if (size == null || size.getX() == -1 || size.getY() == -1) {
-            Vector2i calculatedSize = Vector2i.of(0, 0);
-            for (MutableElement mut : children) {
-                Vector2i elementSize = mut.getMarginedSize();
-                calculatedSize = calculatedSize.add(
-                    container.getPositioning() == Positioning.INLINE
-                        ? Vector2i.of(elementSize.getX(), 0)
-                        : Vector2i.of(0, elementSize.getY())
-                );
-                if (container.getPositioning() != Positioning.INLINE
-                    && calculatedSize.getX() < elementSize.getX()) {
-                    calculatedSize = calculatedSize.setX(elementSize.getX());
-                }
-                if (container.getPositioning() == Positioning.INLINE
-                    && calculatedSize.getY() < elementSize.getY()) {
-                    calculatedSize = calculatedSize.setY(elementSize.getY());
-                }
-            }
+        // The goal of size computation is merely to act on the generated positions of this.computePositions()
+        // The only way that this Container can expand is rightwards and downwards, so just a case
+        // of finding the maximum displacement of an Element's upper bound on an axis
+        Vector2i size = Vector2i.of(0, 0);
 
-            if (size == null) {
-                return calculatedSize;
+        for (Map.Entry<MutableElement, Vector2i> elementEntry : positions.entrySet()) {
+            MutableElement childElement = elementEntry.getKey();
+            Vector2i childPosition = elementEntry.getValue();
+
+            Vector2i childSize = childElement.getSize();
+            Spacing childMargin = childElement.getMargin();
+            // Only need to account for right + bottom Margin, since the rest should be accounted for by the position
+            // already
+            Vector2i childUpperBound = Vector2i.of(
+                childPosition.getX() + childSize.getX() + childMargin.getRight(),
+                childPosition.getY() + childSize.getY() + childMargin.getTop()
+            );
+
+            // If greater than the current size, then size increase to contain this Element
+            if (size.getX() < childUpperBound.getX()) {
+                size = size.setX(childUpperBound.getX());
             }
-            if (size.getX() == -1) {
-                size = size.setX(calculatedSize.getX());
+            if (size.getY() < childUpperBound.getY()) {
+                size = size.setY(childUpperBound.getY());
             }
-            if (size.getY() == -1) {
-                size = size.setY(calculatedSize.getY());
+        }
+
+        if (minimumSize != null) {
+            if (size.getX() < minimumSize.getX()) {
+                size = size.setX(minimumSize.getX());
+            }
+            if (size.getY() < minimumSize.getY()) {
+                size = size.setY(minimumSize.getY());
+            }
+        }
+        if (maximumSize != null) {
+            if (size.getX() > maximumSize.getX()) {
+                size = size.setX(maximumSize.getX());
+            }
+            if (size.getY() > maximumSize.getY()) {
+                size = size.setY(maximumSize.getY());
             }
         }
 
@@ -160,72 +175,17 @@ public class MutableContainer extends MutableElement {
     }
 
     /**
-     * @return A map of each MutableElement (in {@link this#children} and its calculated position. It factors in
-     * if the {@link this#container} is centering, inline, padded and includes each MutableElement's margin.
+     * @return A map of each MutableElement (in {@link this#getChildren()} and its calculated position. It should factor in
+     * if the {@link MutableContainer} is inline, padded and respects each MutableElement's margin.
      */
-    private Map<MutableElement, Vector2i> computePositions() {
-        Map<MutableElement, Vector2i> positions = new LinkedHashMap<>();
-        if (children.isEmpty()) return positions;
+    protected abstract Map<MutableElement, Vector2i> computePositions();
 
-        if (container.isCentering()) {
-            for (MutableElement mut : children) {
-                Vector2i elementSize = mut.getSize();
-
-                // find centered position based on this container's size
-                Vector2i centered = container.getSize()
-                    .div(2)
-                    .sub(elementSize.div(2))
-                    .floor().toInt();
-                positions.put(mut, centered);
-            }
-        } else {
-            Spacing padding = container.getPadding();
-            Vector2i pos = Vector2i.of(
-                    padding.getLeft(),
-                    padding.getTop()
-            );
-            for (MutableElement mut : children) {
-                Vector2i delta =
-                    Vector2i.of(mut.getMargin().getLeft(), mut.getMargin().getTop());
-                if (container.getPositioning() != OVERLAY) {
-                    pos = pos.add(
-                        Vector2i.of(mut.getMargin().getLeft(), mut.getMargin().getTop())
-                    );
-                } else {
-                    pos = delta;
-                }
-                Vector2i elementSize = mut.getSize();
-
-                positions.put(mut, pos);
-
-                if (container.getPositioning() == INLINE) {
-                    pos = pos.add(Vector2i.of(mut.getMargin().getRight() + elementSize.getX(), 0));
-                } else if (container.getPositioning() == DEFAULT){
-                    pos = pos.add(Vector2i.of(0, mut.getMargin().getBottom() + elementSize.getY()));
-                }
-            }
-        }
-
-        return positions;
-    }
-
-    public Optional<Color> getFillColor() {
-        return Optional.ofNullable(fillColor);
-    }
-
-    public Optional<Color> getLineColor() {
-        return Optional.ofNullable(lineColor);
-    }
-
-    public Optional<Integer> getLineWidth() {
-        return Optional.ofNullable(lineWidth);
-    }
-
-    public List<MutableElement> getChildren() {
-        return children;
-    }
+    public abstract List<MutableElement> getChildren();
 
     public Map<MutableElement, Vector2i> getPositions() {
+        if (positions == null) {
+            positions = computePositions();
+        }
         return positions;
     }
 

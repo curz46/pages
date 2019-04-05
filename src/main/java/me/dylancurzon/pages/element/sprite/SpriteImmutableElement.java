@@ -16,14 +16,6 @@ public class SpriteImmutableElement extends ImmutableElement {
         sprite = builder.sprite;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static Builder builder(SpriteImmutableElement element) {
-        return new Builder(element);
-    }
-
     public Sprite getSprite() {
         return sprite;
     }
@@ -31,7 +23,7 @@ public class SpriteImmutableElement extends ImmutableElement {
     @Override
     public Function<MutableContainer, MutableElement> asMutable() {
         return parent -> {
-            SpriteMutableElement element = new SpriteMutableElement(parent, margin, tag, zPosition, sprite);
+            SpriteMutableElement element = new SpriteMutableElement(parent, margin, tag, zPosition, sprite, decoration);
             listeners.forEach(element::subscribe);
             onCreate.forEach(consumer -> consumer.accept(element));
             return element;
@@ -41,13 +33,6 @@ public class SpriteImmutableElement extends ImmutableElement {
     public static class Builder extends ImmutableElement.Builder<SpriteImmutableElement, Builder, SpriteMutableElement> {
 
         protected Sprite sprite;
-
-        protected Builder() {}
-
-        protected Builder(SpriteImmutableElement element) {
-            sprite = element.sprite;
-            margin = element.margin;
-        }
 
         public Builder setSprite(Sprite sprite) {
             this.sprite = sprite;
