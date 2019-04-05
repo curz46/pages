@@ -1,35 +1,61 @@
 package me.dylancurzon.pages.element.container;
 
-import me.dylancurzon.pages.util.Spacing;
+import me.dylancurzon.pages.element.ImmutableElement;
+import me.dylancurzon.pages.element.container.stacking.MutableContainer;
 import me.dylancurzon.pages.util.Vector2i;
+import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-import java.util.Optional;
+import java.util.List;
 
-public interface ImmutableContainer {
+public abstract class ImmutableContainer extends ImmutableElement {
 
-    static DefaultImmutableContainer.Builder builder() {
-        return new DefaultImmutableContainer.Builder();
+    @Nullable
+    protected final Vector2i minimumSize;
+    @Nullable
+    protected final Vector2i maximumSize;
+
+    protected ImmutableContainer(Builder builder) {
+        super(builder);
+        minimumSize = builder.minimumSize;
+        maximumSize = builder.maximumSize;
     }
 
-    Spacing getMargin();
+    public abstract List<ImmutableElement> getChildren();
 
-    Spacing getPadding();
+    @Nullable
+    public Vector2i getMinimumSize() {
+        return minimumSize;
+    }
 
-    Vector2i getSize();
+    @Nullable
+    public Vector2i getMaximumSize() {
+        return maximumSize;
+    }
 
-    Vector2i getMarginedSize();
+    public static abstract class Builder<
+        T extends ImmutableContainer,
+        B extends Builder,
+        M extends MutableContainer> extends ImmutableElement.Builder<T, B, M> {
 
-    Vector2i getPaddedSize();
+        protected Vector2i minimumSize;
+        protected Vector2i maximumSize;
 
-    boolean isCentering();
+        public B setMinimumSize(Vector2i minimumSize) {
+            this.minimumSize = minimumSize;
+            return self();
+        }
 
-    Positioning getPositioning();
+        public B setMaximumSize(Vector2i maximumSize) {
+            this.maximumSize = maximumSize;
+            return self();
+        }
 
-    Optional<Color> getFillColor();
+        public B setFixedSize(Vector2i fixedSize) {
+            minimumSize = fixedSize;
+            maximumSize = fixedSize;
+            return self();
+        }
 
-    Optional<Color> getLineColor();
-
-    Optional<Integer> getLineWidth();
+    }
 
 }

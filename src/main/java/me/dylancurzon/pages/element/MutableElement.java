@@ -1,6 +1,6 @@
 package me.dylancurzon.pages.element;
 
-import me.dylancurzon.pages.element.container.MutableContainer;
+import me.dylancurzon.pages.element.container.stacking.MutableContainer;
 import me.dylancurzon.pages.event.MouseClickEvent;
 import me.dylancurzon.pages.event.MouseHoverEvent;
 import me.dylancurzon.pages.event.TickEvent;
@@ -53,7 +53,7 @@ public abstract class MutableElement extends SimpleEventBus {
 
     /**
      * Subscribes the given {@link Consumer} to the {@link MouseHoverEvent.Start} on this {@link MutableElement}.
-     * Equivalent to {@code Builder#subscribe(MouseHoverEnd.Start.class, consumer)}.
+     * Equivalent to {@code AbstractBuilder#subscribe(MouseHoverEnd.Start.class, consumer)}.
      */
     public void doOnHoverStart(Consumer<MouseHoverEvent.Start> consumer) {
         subscribe(MouseHoverEvent.Start.class, consumer);
@@ -61,14 +61,14 @@ public abstract class MutableElement extends SimpleEventBus {
 
     /**
      * Subscribes the given {@link Consumer} to the {@link MouseHoverEvent.End} on this {@link MutableElement}.
-     * Equivalent to {@code Builder#subscribe(MouseHoverEvent.End.class, consumer)}.
+     * Equivalent to {@code AbstractBuilder#subscribe(MouseHoverEvent.End.class, consumer)}.
      */
     public void doOnHoverEnd(Consumer<MouseHoverEvent.End> consumer) {
         subscribe(MouseHoverEvent.End.class, consumer);
     }
 
     /**
-     * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
+     * Equivalent to {@code AbstractBuilder#subscribe(TickEvent.class, consumer)}.
      * @see ImmutableElement.Builder#subscribe(Class, Consumer)
      */
     public void doOnTick(Consumer<TickEvent> consumer) {
@@ -76,7 +76,7 @@ public abstract class MutableElement extends SimpleEventBus {
     }
 
     /**
-     * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
+     * Equivalent to {@code AbstractBuilder#subscribe(TickEvent.class, consumer)}.
      * @see ImmutableElement.Builder#subscribe(Class, Consumer)
      */
     public void doOnTick(Runnable runnable) {

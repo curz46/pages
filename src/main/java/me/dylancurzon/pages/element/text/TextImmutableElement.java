@@ -2,7 +2,7 @@ package me.dylancurzon.pages.element.text;
 
 import me.dylancurzon.pages.element.ImmutableElement;
 import me.dylancurzon.pages.element.MutableElement;
-import me.dylancurzon.pages.element.container.MutableContainer;
+import me.dylancurzon.pages.element.container.stacking.MutableContainer;
 import me.dylancurzon.pages.util.TextSprite;
 
 import java.util.function.Function;
@@ -14,10 +14,6 @@ public class TextImmutableElement extends ImmutableElement {
     protected TextImmutableElement(Builder builder) {
         super(builder);
         sprite = builder.sprite;
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     @Override
