@@ -23,6 +23,25 @@ public abstract class MouseHoverEvent {
 
     }
 
+    public static class Move extends MouseHoverEvent {
+
+        private final Vector2i position;
+
+        public Move(Vector2i position) {
+            this.position = position;
+        }
+
+        public Vector2i getPosition() {
+            return position;
+        }
+
+        @Override
+        public String toString() {
+            return "MouseHouseEvent.Move{position=" + position + "}";
+        }
+
+    }
+
     public static class End extends MouseHoverEvent {
 
         @Override

@@ -12,10 +12,12 @@ public class ImmutableStackingContainer extends ImmutableContainer {
 
     protected final List<ImmutableElement> children = new ArrayList<>();
     protected final Axis majorAxis;
+    protected final boolean centering;
 
     protected ImmutableStackingContainer(AbstractBuilder builder) {
         super(builder);
         majorAxis = builder.majorAxis == null ? Axis.VERTICAL : builder.majorAxis;
+        centering = builder.centering;
     }
 
     @Override
@@ -32,6 +34,7 @@ public class ImmutableStackingContainer extends ImmutableContainer {
                 tag,
                 zPosition,
                 majorAxis,
+                centering,
                 fixedSize,
                 minimumSize,
                 maximumSize,
@@ -66,11 +69,21 @@ public class ImmutableStackingContainer extends ImmutableContainer {
                     .map(function -> function.apply(container))
                     .collect(Collectors.toList())
             );
+
+            if (centering && fixedSize == null) {
+                throw new IllegalArgumentException(
+                    "ImmutableStackingContainer cannot be centering without a fixedSize");
+            }
+
             return container;
         }
 
     }
 
+    /**
+     * An abstract version of the ImmutableStackingContainer's Builder such that
+     * {@link me.dylancurzon.pages.PageTemplate.Builder} can inherit it.
+     */
     protected static abstract class AbstractBuilder<
         T extends ImmutableStackingContainer,
         B extends AbstractBuilder,
@@ -78,6 +91,7 @@ public class ImmutableStackingContainer extends ImmutableContainer {
 
         protected final List<Function<ImmutableStackingContainer, ImmutableElement>> childrenFunctions = new ArrayList<>();
         protected Axis majorAxis;
+        protected boolean centering;
 
         public B add(ImmutableElement element) {
             childrenFunctions.add(page -> element);
@@ -98,6 +112,11 @@ public class ImmutableStackingContainer extends ImmutableContainer {
 
         public B add(Function<ImmutableStackingContainer, ImmutableElement> function) {
             childrenFunctions.add(function);
+            return self();
+        }
+
+        public B setCentering(boolean centering) {
+            this.centering = centering;
             return self();
         }
 

@@ -29,6 +29,11 @@ public class AbsoluteMutableContainer extends MutableContainer {
 
     @Override
     protected Map<MutableElement, Vector2i> computePositions() {
+        // Set the allocated size for all elements
+        for (MutableElement element : positions.keySet()) {
+            element.setAllocatedSize(element.getMarginedSize());
+        }
+
         // Positions in an AbsoluteMutableContainer are not computed, they are provided.
         return positions;
     }

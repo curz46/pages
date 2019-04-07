@@ -4,6 +4,7 @@ import me.dylancurzon.pages.element.ImmutableElement;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EventListener;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +59,23 @@ public abstract class ImmutableContainer extends ImmutableElement {
 
         public B setFixedSize(Vector2i fixedSize) {
             this.fixedSize = fixedSize;
+            return self();
+        }
+
+        public B fillAllocatedSize() {
+            doOnCreate(element -> element.doOnSizeAllocate(event -> {
+                System.out.println("fillAllocatedSize: updating fixedSize to " + event.getAllocatedSize());
+                element.setFixedSize(event.getAllocatedSize());
+            }));
+            return self();
+        }
+
+        public B fillParentContainer() {
+            doOnCreate(element -> {
+                element.setFixedSize(element.getParent() == null
+                    ? Vector2i.of(0, 0)
+                    : element.getParent().getSize());
+            });
             return self();
         }
 

@@ -8,9 +8,10 @@ import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class MutableContainer extends MutableElement {
 
@@ -25,7 +26,6 @@ public abstract class MutableContainer extends MutableElement {
     protected Vector2i minimumSize;
     @Nullable
     protected Vector2i maximumSize;
-
 
     public MutableContainer(@Nullable MutableContainer parent,
                             Spacing margin,
@@ -82,8 +82,13 @@ public abstract class MutableContainer extends MutableElement {
      */
     @Override
     public void propagateUpdate() {
-        positions = computePositions();
-        size = computeSize();
+        if (fixedSize == null) {
+            positions = computePositions();
+            size = computeSize();
+        } else {
+            size = computeSize();
+            positions = computePositions();
+        }
 
         // Update the mouse position to recalculate the relative position for each child
         setMousePosition(mousePosition);
@@ -110,8 +115,24 @@ public abstract class MutableContainer extends MutableElement {
         });
     }
 
+    public void setFixedSize(Vector2i fixedSize) {
+        this.fixedSize = fixedSize;
+        propagateUpdate();
+    }
+
+    public void setMinimumSize(Vector2i minimumSize) {
+        this.minimumSize = minimumSize;
+        propagateUpdate();
+    }
+
+    public void setMaximumSize(Vector2i maximumSize) {
+        this.maximumSize = maximumSize;
+        propagateUpdate();
+    }
+
     public Map<MutableElement, Vector2i> flatten() {
-        Map<MutableElement, Vector2i> elements = new HashMap<>();
+        // Maintain insertion order
+        Map<MutableElement, Vector2i> elements = new LinkedHashMap<>();
 
         positions.forEach((element, position) -> {
             if (element instanceof MutableContainer) {
@@ -127,6 +148,11 @@ public abstract class MutableContainer extends MutableElement {
     }
 
     public Vector2i computeSize() {
+        // Fixed size is fixed
+        if (fixedSize != null) {
+            return fixedSize;
+        }
+
         // The goal of size computation is merely to act on the generated positions of this.computePositions()
         // The only way that this Container can expand is rightwards and downwards, so just a case
         // of finding the maximum displacement of an Element's upper bound on an axis
@@ -195,6 +221,18 @@ public abstract class MutableContainer extends MutableElement {
             size = computeSize();
         }
         return size;
+    }
+
+    public Optional<Vector2i> getFixedSize() {
+        return Optional.ofNullable(fixedSize);
+    }
+
+    public Optional<Vector2i> getMinimumSize() {
+        return Optional.ofNullable(minimumSize);
+    }
+
+    public Optional<Vector2i> getMaximumSize() {
+        return Optional.ofNullable(maximumSize);
     }
 
 }

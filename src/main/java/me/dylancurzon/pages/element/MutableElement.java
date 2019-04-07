@@ -1,9 +1,7 @@
 package me.dylancurzon.pages.element;
 
 import me.dylancurzon.pages.element.container.MutableContainer;
-import me.dylancurzon.pages.event.MouseClickEvent;
-import me.dylancurzon.pages.event.MouseHoverEvent;
-import me.dylancurzon.pages.event.TickEvent;
+import me.dylancurzon.pages.event.*;
 import me.dylancurzon.pages.event.bus.SimpleEventBus;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
@@ -24,7 +22,9 @@ public abstract class MutableElement extends SimpleEventBus {
 
     protected ElementDecoration decoration;
 
-    protected Vector2i mousePosition = null;
+    protected Vector2i mousePosition;
+    @Nullable
+    protected Vector2i allocatedSize;
 
     protected MutableElement(@Nullable MutableContainer parent,
                              Spacing margin,
@@ -52,6 +52,22 @@ public abstract class MutableElement extends SimpleEventBus {
     }
 
     /**
+     * Subscribes the given {@link Consumer} to the {@link UpdateEvent} on this {@link MutableElement}.
+     * Equivalent to {@code Builder#subscribe(UpdateEvent.class, consumer)}.
+     */
+    public void doOnUpdate(Consumer<UpdateEvent> consumer) {
+        subscribe(UpdateEvent.class, consumer);
+    }
+
+    /**
+     * Subscribes the given {@link Consumer} to the {@link UpdateEvent} on this {@link MutableElement}.
+     * @see this#doOnUpdate(Consumer)
+     */
+    public void doOnUpdate(Runnable runnable) {
+        doOnUpdate(event -> runnable.run());
+    }
+
+    /**
      * Subscribes the given {@link Consumer} to the {@link MouseClickEvent} on this {@link MutableElement}.
      * Equivalent to {@code Builder#subscribe(MouseClickEvent.class, consumer)}.
      */
@@ -61,10 +77,18 @@ public abstract class MutableElement extends SimpleEventBus {
 
     /**
      * Subscribes the given {@link Consumer} to the {@link MouseHoverEvent.Start} on this {@link MutableElement}.
-     * Equivalent to {@code Builder#subscribe(MouseHoverEnd.Start.class, consumer)}.
+     * Equivalent to {@code Builder#subscribe(MouseHoverEvent.Start.class, consumer)}.
      */
     public void doOnHoverStart(Consumer<MouseHoverEvent.Start> consumer) {
         subscribe(MouseHoverEvent.Start.class, consumer);
+    }
+
+    /**
+     * Subscribes the given {@link Consumer} to the {@link MouseHoverEvent.Move} on this {@link MutableElement}.
+     * Equivalent to {@code Builder#subscribe(MouseHoverEvent.Move.class, consumer)}.
+     */
+    public void doOnHoverMove(Consumer<MouseHoverEvent.Move> consumer) {
+        subscribe(MouseHoverEvent.Move.class, consumer);
     }
 
     /**
@@ -76,19 +100,27 @@ public abstract class MutableElement extends SimpleEventBus {
     }
 
     /**
+     * Subscribes the given {@link Consumer} to the {@link TickEvent} on this {@link MutableElement}.
      * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
-     * @see ImmutableElement.Builder#subscribe(Class, Consumer)
      */
     public void doOnTick(Consumer<TickEvent> consumer) {
         subscribe(TickEvent.class, consumer);
     }
 
     /**
-     * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
-     * @see ImmutableElement.Builder#subscribe(Class, Consumer)
+     * Subscribes the given {@link Consumer} to the {@link TickEvent} on this {@link MutableElement}.
+     * @see this#doOnTick(Consumer)
      */
     public void doOnTick(Runnable runnable) {
         doOnTick(event -> runnable.run());
+    }
+
+    /**
+     * Subscribes the given {@link Consumer} to the {@link SizeAllocationEvent} on this {@link MutableElement}.
+     * Equivalent to {@code Builder#subscribe(SizeAllocationEvent.class, consumer)}.
+     */
+    public void doOnSizeAllocate(Consumer<SizeAllocationEvent> consumer) {
+        subscribe(SizeAllocationEvent.class, consumer);
     }
 
     /**
@@ -99,13 +131,13 @@ public abstract class MutableElement extends SimpleEventBus {
         if (parent != null) {
             parent.propagateUpdate();
         }
+
+        post(new UpdateEvent());
     }
 
     public void setMousePosition(Vector2i mousePosition) {
         boolean previousContains = this.mousePosition != null;
         boolean nowContains = mousePosition != null;
-
-        this.mousePosition = mousePosition;
 
         if (previousContains != nowContains) {
             if (mousePosition == null) {
@@ -113,11 +145,26 @@ public abstract class MutableElement extends SimpleEventBus {
             } else {
                 post(new MouseHoverEvent.Start(mousePosition));
             }
+        } else if (!Objects.equals(this.mousePosition, mousePosition)) {
+            post(new MouseHoverEvent.Move(mousePosition));
         }
+
+        this.mousePosition = mousePosition;
     }
 
     public void setParent(MutableContainer parent) {
         this.parent = parent;
+    }
+
+    public void setAllocatedSize(Vector2i allocatedSize) {
+        if (Objects.equals(this.allocatedSize, allocatedSize)) {
+            // Avoid a cyclical loop where the fixedSize is based on the allocatedSize
+            return;
+        }
+
+        this.allocatedSize = Objects.requireNonNull(allocatedSize);
+        // Post to listeners on this element
+        post(new SizeAllocationEvent(allocatedSize));
     }
 
     public Spacing getMargin() {
@@ -166,7 +213,7 @@ public abstract class MutableElement extends SimpleEventBus {
         return "MutableElement{" +
             "tag=" + tag +
             ", margin=" + margin +
-            ", parent=" + parent + "}";
+            ", parent=" + (parent == null ? null : parent.getClass().getSimpleName()) + "}";
     }
 
 }

@@ -4,6 +4,7 @@ import me.dylancurzon.pages.element.ImmutableElement;
 import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.util.Vector2i;
 
+import java.sql.BatchUpdateException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -11,14 +12,14 @@ import java.util.stream.Collectors;
 public class ImmutableRatioContainer extends ImmutableContainer {
 
 //    protected final List<ImmutableElement> children = new ArrayList<>();
-    protected final Map<ImmutableElement, Integer> childRatioMap = new HashMap<>();
+    protected final Map<ImmutableElement, Integer> childRatioMap = new LinkedHashMap<>();
     protected final Axis majorAxis;
-    protected final Vector2i fixedSize;
+    protected final boolean centering;
 
     protected ImmutableRatioContainer(Builder builder) {
         super(builder);
         majorAxis = builder.majorAxis == null ? Axis.VERTICAL : builder.majorAxis;
-        fixedSize = Objects.requireNonNull(builder.fixedSize);
+        centering = builder.centering;
     }
 
     public Map<ImmutableElement, Integer> getChildRatioMap() {
@@ -42,19 +43,27 @@ public class ImmutableRatioContainer extends ImmutableContainer {
                 tag,
                 zPosition,
                 majorAxis,
+                centering,
                 fixedSize,
                 minimumSize,
                 maximumSize,
                 decoration
             );
-            Map<MutableElement, Integer> mutableRatioMap = childRatioMap
-                .entrySet().stream()
-                .collect(Collectors.toMap(
-                    entry -> entry.getKey().asMutable(container),
-                    Map.Entry::getValue
-                ));
+//            Map<MutableElement, Integer> mutableRatioMap = childRatioMap
+//                .entrySet().stream()
+//                .collect(Collectors.toMap(
+//                    entry -> entry.getKey().asMutable(container),
+//                    Map.Entry::getValue,
+//                    (u, v) -> {
+//                        throw new IllegalStateException(String.format("Duplicate key %s", u));
+//                    },
+//                    LinkedHashMap::new
+//                ));
 
-            container.getChildRatioMap().putAll(mutableRatioMap);
+            childRatioMap.forEach(((immutableElement, ratio) ->
+                container.getChildRatioMap().put(immutableElement.asMutable(container), ratio)));
+
+//            container.getChildRatioMap().putAll(mutableRatioMap);
             // Update positions and size
             container.propagateUpdate();
 
@@ -67,9 +76,9 @@ public class ImmutableRatioContainer extends ImmutableContainer {
 
     public static class Builder extends ImmutableContainer.Builder<ImmutableRatioContainer, Builder, MutableRatioContainer> {
 
-        protected final Map<Function<ImmutableRatioContainer, ImmutableElement>, Integer> childFunctionRatioMap = new HashMap<>();
+        protected final Map<Function<ImmutableRatioContainer, ImmutableElement>, Integer> childFunctionRatioMap = new LinkedHashMap<>();
         protected Axis majorAxis;
-        protected Vector2i fixedSize;
+        protected boolean centering;
 
         public Builder add(ImmutableElement element, int ratio) {
             childFunctionRatioMap.put(page -> element, ratio);
@@ -87,8 +96,8 @@ public class ImmutableRatioContainer extends ImmutableContainer {
             return self();
         }
 
-        public Builder setFixedSize(Vector2i fixedSize) {
-            this.fixedSize = fixedSize;
+        public Builder setCentering(boolean centering) {
+            this.centering = centering;
             return self();
         }
 
@@ -99,12 +108,14 @@ public class ImmutableRatioContainer extends ImmutableContainer {
 
         @Override
         public ImmutableRatioContainer build() {
+            // Allow a null fixedSize such that it can be defined during execution
+            if (fixedSize == null) {
+                fixedSize = Vector2i.of(0, 0);
+            }
+
             ImmutableRatioContainer container = new ImmutableRatioContainer(this);
-            container.getChildRatioMap().putAll(childFunctionRatioMap.entrySet().stream()
-                .collect(Collectors.toMap(
-                    entry -> entry.getKey().apply(container),
-                    Map.Entry::getValue
-                )));
+            childFunctionRatioMap.forEach(((function, ratio) ->
+                container.getChildRatioMap().put(function.apply(container), ratio)));
             return container;
         }
 

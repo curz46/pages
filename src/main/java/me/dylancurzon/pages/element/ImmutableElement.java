@@ -1,9 +1,7 @@
 package me.dylancurzon.pages.element;
 
 import me.dylancurzon.pages.element.container.MutableContainer;
-import me.dylancurzon.pages.event.MouseClickEvent;
-import me.dylancurzon.pages.event.MouseHoverEvent;
-import me.dylancurzon.pages.event.TickEvent;
+import me.dylancurzon.pages.event.*;
 import me.dylancurzon.pages.event.bus.EventListener;
 import me.dylancurzon.pages.util.Spacing;
 import org.jetbrains.annotations.Nullable;
@@ -103,7 +101,25 @@ public abstract class ImmutableElement {
         }
 
         /**
-         * Equivalent to {@code AbstractBuilder#subscribe(MouseClickEvent.class, consumer)}.
+         * Equivalent to {@code Builder#subscribe(UpdateEvent.class, consumer)}.
+         * @see Builder#subscribe(Class, Consumer)
+         */
+        public B doOnUpdate(Consumer<UpdateEvent> consumer) {
+            subscribe(UpdateEvent.class, consumer);
+            return self();
+        }
+
+        /**
+         * Equivalent to {@code Builder#subscribe(UpdateEvent.class, consumer)}.
+         * @see Builder#subscribe(Class, Consumer)
+         */
+        public B doOnUpdate(Runnable runnable) {
+            doOnUpdate(event -> runnable.run());
+            return self();
+        }
+
+        /**
+         * Equivalent to {@code Builder#subscribe(MouseClickEvent.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */
         public B doOnClick(Consumer<MouseClickEvent> consumer) {
@@ -112,7 +128,7 @@ public abstract class ImmutableElement {
         }
 
         /**
-         * Equivalent to {@code AbstractBuilder#subscribe(MouseHoverEnd.Start.class, consumer)}.
+         * Equivalent to {@code Builder#subscribe(MouseHoverEnd.Start.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */
         public B doOnHoverStart(Consumer<MouseHoverEvent.Start> consumer) {
@@ -121,7 +137,16 @@ public abstract class ImmutableElement {
         }
 
         /**
-         * Equivalent to {@code AbstractBuilder#subscribe(MouseHoverEvent.End.class, consumer)}.
+         * Equivalent to {@code Builder#subscribe(MouseHoverEvent.Move.class, consumer)}.
+         * @see Builder#subscribe(Class, Consumer)
+         */
+        public B doOnHoverMove(Consumer<MouseHoverEvent.Move> consumer) {
+            subscribe(MouseHoverEvent.Move.class, consumer);
+            return self();
+        }
+
+        /**
+         * Equivalent to {@code Builder#subscribe(MouseHoverEvent.End.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */
         public B doOnHoverEnd(Consumer<MouseHoverEvent.End> consumer) {
@@ -130,7 +155,7 @@ public abstract class ImmutableElement {
         }
 
         /**
-         * Equivalent to {@code AbstractBuilder#subscribe(TickEvent.class, consumer)}.
+         * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */
         public B doOnTick(Consumer<TickEvent> consumer) {
@@ -139,11 +164,20 @@ public abstract class ImmutableElement {
         }
 
         /**
-         * Equivalent to {@code AbstractBuilder#subscribe(TickEvent.class, consumer)}.
+         * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */
         public B doOnTick(Runnable runnable) {
             return doOnTick(event -> runnable.run());
+        }
+
+        /**
+         * Equivalent to {@code Builder#subscribe(SizeAllocationEvent.class, consumer)}.
+         * @see Builder#subscribe(Class, Consumer)
+         */
+        public B doOnSizeAllocate(Consumer<SizeAllocationEvent> consumer) {
+            subscribe(SizeAllocationEvent.class, consumer);
+            return self();
         }
 
         /**
