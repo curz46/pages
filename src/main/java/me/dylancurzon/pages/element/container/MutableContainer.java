@@ -46,7 +46,7 @@ public abstract class MutableContainer extends MutableElement {
 
         // Whenever this MutableContainer is clicked on, determine whether or not the event should be transferred to
         // this container's children
-        subscribe(MouseClickEvent.class, event -> {
+        doOnClick(event -> {
             Vector2i position = event.getPosition();
 
             getPositions().forEach((childElement, childPosition) -> {
@@ -69,7 +69,7 @@ public abstract class MutableContainer extends MutableElement {
         });
 
         // Whenever this MutableContainer is "ticked", forward it
-        subscribe(TickEvent.class, event -> {
+        doOnTick(event -> {
             for (MutableElement element : getChildren()) {
                 element.post(event);
             }

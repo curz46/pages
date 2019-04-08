@@ -2,6 +2,7 @@ package me.dylancurzon.pages.element;
 
 import me.dylancurzon.pages.element.container.MutableContainer;
 import me.dylancurzon.pages.event.*;
+import me.dylancurzon.pages.event.bus.QueuingEventBus;
 import me.dylancurzon.pages.event.bus.SimpleEventBus;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public abstract class MutableElement extends SimpleEventBus {
+public abstract class MutableElement extends QueuingEventBus {
 
     protected final Spacing margin;
     @Nullable
@@ -47,8 +48,12 @@ public abstract class MutableElement extends SimpleEventBus {
         }
 
         this.decoration = Objects.requireNonNull(decoration);
-
         this.parent = parent;
+
+        doOnTick(event -> {
+            // Whenever this element experiences a tick, consume all the events that were queued.
+            consume();
+        });
     }
 
     /**
@@ -156,6 +161,7 @@ public abstract class MutableElement extends SimpleEventBus {
         this.parent = parent;
     }
 
+    // TODO: This method in particular is extremely hacky.
     public void setAllocatedSize(Vector2i allocatedSize) {
         if (Objects.equals(this.allocatedSize, allocatedSize)) {
             // Avoid a cyclical loop where the fixedSize is based on the allocatedSize
@@ -164,7 +170,10 @@ public abstract class MutableElement extends SimpleEventBus {
 
         this.allocatedSize = Objects.requireNonNull(allocatedSize);
         // Post to listeners on this element
-        post(new SizeAllocationEvent(allocatedSize));
+        // This has to be non-immediate, because otherwise newer positions will be evaluated during the evaluation
+        // that called this method.  Newer positions will therefore be overridden by the original position evaluation
+        // when it finishes, which is undesirable behaviour.
+        post(new SizeAllocationEvent(allocatedSize), false);
     }
 
     public Spacing getMargin() {
