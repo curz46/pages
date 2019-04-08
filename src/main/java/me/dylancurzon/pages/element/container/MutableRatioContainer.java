@@ -69,17 +69,17 @@ public class MutableRatioContainer extends MutableContainer {
 
             MutableElement childElement = childEntry.getKey();
             if (centerOnMinor) {
-                System.out.println("CENTERING: " + childElement);
-                System.out.println("fixedSize: " + fixedSize);
-                System.out.println("parentSize: " + getSize());
-                System.out.println("childSize: " + childElement.getMarginedSize());
+//                System.out.println("CENTERING: " + childElement);
+//                System.out.println("fixedSize: " + fixedSize);
+//                System.out.println("parentSize: " + getSize());
+//                System.out.println("childSize: " + childElement.getMarginedSize());
 
                 Vector2i centeringOffset = getSize().div(2) // move to middle
                     .sub(childElement.getMarginedSize().div(2)) // adjust for element width, allow movement with margin
                     .toInt();
 
-                System.out.println("currentPosition: " + currentPosition);
-                System.out.println("centeringOffset: " + centeringOffset);
+//                System.out.println("currentPosition: " + currentPosition);
+//                System.out.println("centeringOffset: " + centeringOffset);
 
 //                positions.put(
 //                    childElement,

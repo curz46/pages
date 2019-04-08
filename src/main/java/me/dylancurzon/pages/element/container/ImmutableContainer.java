@@ -64,7 +64,6 @@ public abstract class ImmutableContainer extends ImmutableElement {
 
         public B fillAllocatedSize() {
             doOnCreate(element -> element.doOnSizeAllocate(event -> {
-                System.out.println("fillAllocatedSize: updating fixedSize to " + event.getAllocatedSize());
                 element.setFixedSize(event.getAllocatedSize());
             }));
             return self();
