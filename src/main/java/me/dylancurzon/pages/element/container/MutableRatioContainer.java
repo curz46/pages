@@ -15,14 +15,16 @@ public class MutableRatioContainer extends MutableContainer {
 
     // By default, stack elements from top to bottom
     private Axis majorAxis = Axis.VERTICAL;
-    private boolean centering;
+    private boolean centerOnX;
+    private boolean centerOnY;
 
     public MutableRatioContainer(@Nullable MutableContainer parent,
                                  Spacing margin,
                                  @Nullable String tag,
                                  @Nullable Integer zPosition,
                                  @Nullable Axis majorAxis,
-                                 boolean centering,
+                                 boolean centerOnX,
+                                 boolean centerOnY,
                                  Vector2i fixedSize,
                                  @Nullable Vector2i minimumSize,
                                  @Nullable Vector2i maximumSize,
@@ -34,7 +36,8 @@ public class MutableRatioContainer extends MutableContainer {
         }
 
         if (majorAxis != null) this.majorAxis = majorAxis;
-        this.centering = centering;
+        this.centerOnX = centerOnX;
+        this.centerOnY = centerOnY;
     }
 
     public Map<MutableElement, Integer> getChildRatioMap() {
@@ -55,15 +58,17 @@ public class MutableRatioContainer extends MutableContainer {
             .mapToInt(i -> i)
             .sum();
 
+        // Centering on the majorAxis for a Ratio container is very different from that of a Stacking container
+        // The centering moves each element such that it is in the middle of its allocated space
+        boolean centerOnMajor = centerOnX && majorAxis == Axis.HORIZONTAL || centerOnY && majorAxis == Axis.VERTICAL;
+        boolean centerOnMinor = centerOnX && majorAxis == Axis.VERTICAL   || centerOnY && majorAxis == Axis.HORIZONTAL;
+
         Vector2i currentPosition = Vector2i.of(0, 0);
         for (Map.Entry<MutableElement, Integer> childEntry : childRatioMap.entrySet()) {
-            MutableElement childElement = childEntry.getKey();
-            if (centering) {
-                if (fixedSize == null) {
-                    throw new IllegalStateException(
-                        "MutableStackingContainer is set as centering without a fixedSize: " + this);
-                }
+            Vector2i elementPosition = null;
 
+            MutableElement childElement = childEntry.getKey();
+            if (centerOnMinor) {
                 System.out.println("CENTERING: " + childElement);
                 System.out.println("fixedSize: " + fixedSize);
                 System.out.println("parentSize: " + getSize());
@@ -76,27 +81,41 @@ public class MutableRatioContainer extends MutableContainer {
                 System.out.println("currentPosition: " + currentPosition);
                 System.out.println("centeringOffset: " + centeringOffset);
 
-                positions.put(
-                    childElement,
-                    currentPosition.add(
-                        majorAxis == Axis.HORIZONTAL
-                            ? centeringOffset.setX(0) // minorAxis=VERTICAL
-                            : centeringOffset.setY(0) // minorAxis=HORIZONTAL
-                    )
-                );
-
-                System.out.println("finalPosition: " + currentPosition.add(
+//                positions.put(
+//                    childElement,
+//                    currentPosition.add(
+//                        majorAxis == Axis.HORIZONTAL
+//                            ? centeringOffset.setX(0) // minorAxis=VERTICAL
+//                            : centeringOffset.setY(0) // minorAxis=HORIZONTAL
+//                    )
+//                );
+                elementPosition = currentPosition.add(
                     majorAxis == Axis.HORIZONTAL
                         ? centeringOffset.setX(0) // minorAxis=VERTICAL
                         : centeringOffset.setY(0) // minorAxis=HORIZONTAL
-                ));
+                );
             } else {
-                positions.put(childElement, currentPosition);
+//                positions.put(childElement, currentPosition);
+                elementPosition = currentPosition;
             }
 
             int childRatio = childEntry.getValue();
             double relativeRatio = ((double) childRatio) / totalRatio;
+            // The position offset is equivalent to the size of the allocated space for this child
             Vector2i positionOffset = fixedSize.toDouble().mul(relativeRatio).toInt();
+
+            if (centerOnMajor) {
+                Vector2i midpointOffset = positionOffset.div(2)
+                    .sub(childElement.getSize().div(2))
+                    .toInt();
+                elementPosition = elementPosition.add(
+                    majorAxis == Axis.HORIZONTAL
+                        ? midpointOffset.setY(0)
+                        : midpointOffset.setX(0)
+                );
+            }
+
+            positions.put(childElement, elementPosition);
 
             currentPosition = currentPosition.add(
                 majorAxis == Axis.HORIZONTAL

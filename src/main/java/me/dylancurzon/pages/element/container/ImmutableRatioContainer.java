@@ -14,12 +14,14 @@ public class ImmutableRatioContainer extends ImmutableContainer {
 //    protected final List<ImmutableElement> children = new ArrayList<>();
     protected final Map<ImmutableElement, Integer> childRatioMap = new LinkedHashMap<>();
     protected final Axis majorAxis;
-    protected final boolean centering;
+    protected final boolean centerOnX;
+    protected final boolean centerOnY;
 
     protected ImmutableRatioContainer(Builder builder) {
         super(builder);
         majorAxis = builder.majorAxis == null ? Axis.VERTICAL : builder.majorAxis;
-        centering = builder.centering;
+        centerOnX = builder.centerOnX;
+        centerOnY = builder.centerOnY;
     }
 
     public Map<ImmutableElement, Integer> getChildRatioMap() {
@@ -43,7 +45,8 @@ public class ImmutableRatioContainer extends ImmutableContainer {
                 tag,
                 zPosition,
                 majorAxis,
-                centering,
+                centerOnX,
+                centerOnY,
                 fixedSize,
                 minimumSize,
                 maximumSize,
@@ -78,7 +81,8 @@ public class ImmutableRatioContainer extends ImmutableContainer {
 
         protected final Map<Function<ImmutableRatioContainer, ImmutableElement>, Integer> childFunctionRatioMap = new LinkedHashMap<>();
         protected Axis majorAxis;
-        protected boolean centering;
+        protected boolean centerOnX;
+        protected boolean centerOnY;
 
         public Builder add(ImmutableElement element, int ratio) {
             childFunctionRatioMap.put(page -> element, ratio);
@@ -96,8 +100,13 @@ public class ImmutableRatioContainer extends ImmutableContainer {
             return self();
         }
 
-        public Builder setCentering(boolean centering) {
-            this.centering = centering;
+        public Builder setCenterOnX(boolean centerOnX) {
+            this.centerOnX = centerOnX;
+            return self();
+        }
+
+        public Builder setCenterOnY(boolean centerOnY) {
+            this.centerOnY = centerOnY;
             return self();
         }
 

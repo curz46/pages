@@ -12,13 +12,15 @@ public class ImmutableStackingContainer extends ImmutableContainer {
 
     protected final List<ImmutableElement> children = new ArrayList<>();
     protected final Axis majorAxis;
-    protected final boolean centering;
+    protected final boolean centerOnX;
+    protected final boolean centerOnY;
 
     protected ImmutableStackingContainer(AbstractBuilder builder) {
         super(builder);
         majorAxis = builder.majorAxis == null ? Axis.VERTICAL : builder.majorAxis;
-        centering = builder.centering;
-    }
+        centerOnX = builder.centerOnX;
+        centerOnY = builder.centerOnY;
+}
 
     @Override
     public List<ImmutableElement> getChildren() {
@@ -34,7 +36,8 @@ public class ImmutableStackingContainer extends ImmutableContainer {
                 tag,
                 zPosition,
                 majorAxis,
-                centering,
+                centerOnX,
+                centerOnY,
                 fixedSize,
                 minimumSize,
                 maximumSize,
@@ -70,11 +73,6 @@ public class ImmutableStackingContainer extends ImmutableContainer {
                     .collect(Collectors.toList())
             );
 
-            if (centering && fixedSize == null) {
-                throw new IllegalArgumentException(
-                    "ImmutableStackingContainer cannot be centering without a fixedSize");
-            }
-
             return container;
         }
 
@@ -91,7 +89,8 @@ public class ImmutableStackingContainer extends ImmutableContainer {
 
         protected final List<Function<ImmutableStackingContainer, ImmutableElement>> childrenFunctions = new ArrayList<>();
         protected Axis majorAxis;
-        protected boolean centering;
+        protected boolean centerOnX;
+        protected boolean centerOnY;
 
         public B add(ImmutableElement element) {
             childrenFunctions.add(page -> element);
@@ -115,8 +114,13 @@ public class ImmutableStackingContainer extends ImmutableContainer {
             return self();
         }
 
-        public B setCentering(boolean centering) {
-            this.centering = centering;
+        public B setCenterOnX(boolean centerOnX) {
+            this.centerOnX = centerOnX;
+            return self();
+        }
+
+        public B setCenterOnY(boolean centerOnY) {
+            this.centerOnY = centerOnY;
             return self();
         }
 

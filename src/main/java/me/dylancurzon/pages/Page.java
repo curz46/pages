@@ -19,7 +19,8 @@ public class Page extends MutableStackingContainer {
                 @Nullable String tag,
                 @Nullable Integer zPosition,
                 @Nullable Axis majorAxis,
-                boolean centering,
+                boolean centerOnX,
+                boolean centerOnY,
                 @Nullable Vector2i fixedSize,
                 ElementDecoration decoration) {
         super(
@@ -28,7 +29,8 @@ public class Page extends MutableStackingContainer {
             tag,
             zPosition == null ? 0 : zPosition,
             majorAxis == null ? Axis.VERTICAL : majorAxis,
-            centering,
+            centerOnX,
+            centerOnY,
             fixedSize,
             null,
             null,
