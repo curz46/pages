@@ -8,10 +8,7 @@ import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class MutableContainer extends MutableElement {
 
@@ -98,6 +95,11 @@ public abstract class MutableContainer extends MutableElement {
 
     @Override
     public void setMousePosition(Vector2i mousePosition) {
+        if (Objects.equals(this.mousePosition, mousePosition)) {
+            // TODO: If this isn't here, some cyclical bug occurs.
+            return;
+        }
+
         super.setMousePosition(mousePosition);
         // Now update children, relatively
         positions.forEach((element, childPosition) -> {

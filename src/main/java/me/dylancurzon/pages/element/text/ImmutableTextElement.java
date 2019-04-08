@@ -7,11 +7,11 @@ import me.dylancurzon.pages.util.TextSprite;
 
 import java.util.function.Function;
 
-public class TextImmutableElement extends ImmutableElement {
+public class ImmutableTextElement extends ImmutableElement {
 
     private final TextSprite sprite;
 
-    protected TextImmutableElement(Builder builder) {
+    protected ImmutableTextElement(Builder builder) {
         super(builder);
         sprite = builder.sprite;
     }
@@ -19,7 +19,7 @@ public class TextImmutableElement extends ImmutableElement {
     @Override
     public Function<MutableContainer, MutableElement> asMutable() {
         return parent -> {
-            TextMutableElement element = new TextMutableElement(parent, margin, tag, zPosition, this, decoration);
+            MutableTextElement element = new MutableTextElement(parent, margin, tag, zPosition, this, decoration);
             listeners.forEach(element::subscribe);
             onCreate.forEach(consumer -> consumer.accept(element));
             return element;
@@ -30,7 +30,7 @@ public class TextImmutableElement extends ImmutableElement {
         return sprite;
     }
 
-    public static class Builder extends ImmutableElement.Builder<TextImmutableElement, Builder, TextMutableElement> {
+    public static class Builder extends ImmutableElement.Builder<ImmutableTextElement, Builder, MutableTextElement> {
 
         private TextSprite sprite;
 
@@ -45,8 +45,8 @@ public class TextImmutableElement extends ImmutableElement {
         }
 
         @Override
-        public TextImmutableElement build() {
-            return new TextImmutableElement(this);
+        public ImmutableTextElement build() {
+            return new ImmutableTextElement(this);
         }
 
     }

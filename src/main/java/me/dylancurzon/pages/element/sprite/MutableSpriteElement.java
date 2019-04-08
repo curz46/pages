@@ -8,11 +8,11 @@ import me.dylancurzon.pages.util.Sprite;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
-public class SpriteMutableElement extends MutableElement {
+public class MutableSpriteElement extends MutableElement {
 
     protected Sprite sprite;
 
-    public SpriteMutableElement(@Nullable MutableContainer parent,
+    public MutableSpriteElement(@Nullable MutableContainer parent,
                                 Spacing margin,
                                 @Nullable String tag,
                                 @Nullable Integer zPosition,
@@ -23,8 +23,8 @@ public class SpriteMutableElement extends MutableElement {
     }
 
     public void setSprite(Sprite sprite) {
-        propagateUpdate();
         this.sprite = sprite;
+        propagateUpdate();
     }
 
     public Sprite getSprite() {

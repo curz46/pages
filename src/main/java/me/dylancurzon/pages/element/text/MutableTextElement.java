@@ -8,16 +8,16 @@ import me.dylancurzon.pages.util.TextSprite;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
-public class TextMutableElement extends MutableElement {
+public class MutableTextElement extends MutableElement {
 
-    private final TextImmutableElement immutableElement;
+    private final ImmutableTextElement immutableElement;
     private TextSprite sprite;
 
-    public TextMutableElement(@Nullable MutableContainer parent,
+    public MutableTextElement(@Nullable MutableContainer parent,
                               Spacing margin,
                               @Nullable String tag,
                               @Nullable Integer zPosition,
-                              TextImmutableElement immutableElement,
+                              ImmutableTextElement immutableElement,
                               ElementDecoration decoration) {
         super(parent, margin, tag, zPosition, decoration);
         this.immutableElement = immutableElement;

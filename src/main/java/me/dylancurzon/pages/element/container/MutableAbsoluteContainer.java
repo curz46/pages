@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class AbsoluteMutableContainer extends MutableContainer {
+public class MutableAbsoluteContainer extends MutableContainer {
 
-    public AbsoluteMutableContainer(@Nullable MutableContainer parent,
+    public MutableAbsoluteContainer(@Nullable MutableContainer parent,
                                     Spacing margin,
                                     @Nullable String tag,
                                     @Nullable Integer zPosition,
@@ -39,7 +39,7 @@ public class AbsoluteMutableContainer extends MutableContainer {
     }
 
     /**
-     * @return An immutable copy of the children contained by this {@link AbsoluteMutableContainer}. Modifications to
+     * @return An immutable copy of the children contained by this {@link MutableAbsoluteContainer}. Modifications to
      * a container of this type must be done through {@link this#setPositions(Map)}}.
      */
     @Override

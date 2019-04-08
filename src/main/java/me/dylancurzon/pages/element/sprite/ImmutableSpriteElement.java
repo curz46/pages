@@ -7,11 +7,11 @@ import me.dylancurzon.pages.util.Sprite;
 
 import java.util.function.Function;
 
-public class SpriteImmutableElement extends ImmutableElement {
+public class ImmutableSpriteElement extends ImmutableElement {
 
     private final Sprite sprite;
 
-    public SpriteImmutableElement(Builder builder) {
+    public ImmutableSpriteElement(Builder builder) {
         super(builder);
         sprite = builder.sprite;
     }
@@ -23,14 +23,14 @@ public class SpriteImmutableElement extends ImmutableElement {
     @Override
     public Function<MutableContainer, MutableElement> asMutable() {
         return parent -> {
-            SpriteMutableElement element = new SpriteMutableElement(parent, margin, tag, zPosition, sprite, decoration);
+            MutableSpriteElement element = new MutableSpriteElement(parent, margin, tag, zPosition, sprite, decoration);
             listeners.forEach(element::subscribe);
             onCreate.forEach(consumer -> consumer.accept(element));
             return element;
         };
     }
 
-    public static class Builder extends ImmutableElement.Builder<SpriteImmutableElement, Builder, SpriteMutableElement> {
+    public static class Builder extends ImmutableElement.Builder<ImmutableSpriteElement, Builder, MutableSpriteElement> {
 
         protected Sprite sprite;
 
@@ -45,8 +45,8 @@ public class SpriteImmutableElement extends ImmutableElement {
         }
 
         @Override
-        public SpriteImmutableElement build() {
-            return new SpriteImmutableElement(this);
+        public ImmutableSpriteElement build() {
+            return new ImmutableSpriteElement(this);
         }
 
     }
