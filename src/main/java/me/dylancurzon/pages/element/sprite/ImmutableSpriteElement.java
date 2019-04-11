@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 public class ImmutableSpriteElement extends ImmutableElement {
 
-    private final Sprite sprite;
+    protected final Sprite sprite;
 
     public ImmutableSpriteElement(Builder builder) {
         super(builder);

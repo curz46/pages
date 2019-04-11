@@ -21,6 +21,7 @@ public class MutableAbsoluteContainer extends MutableContainer {
                                     @Nullable Vector2i maximumSize,
                                     ElementDecoration decoration) {
         super(parent, margin, tag, zPosition, fixedSize, minimumSize, maximumSize, decoration);
+        positions = Map.of();
     }
 
     public void setPositions(Map<MutableElement, Vector2i> positions) {
@@ -35,6 +36,10 @@ public class MutableAbsoluteContainer extends MutableContainer {
         }
 
         // Positions in an AbsoluteMutableContainer are not computed, they are provided.
+        return positions;
+    }
+
+    public Map<MutableElement, Vector2i> getPositions() {
         return positions;
     }
 
