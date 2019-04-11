@@ -3,7 +3,6 @@ package me.dylancurzon.pages.element.container;
 import me.dylancurzon.pages.element.ElementDecoration;
 import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.event.MouseClickEvent;
-import me.dylancurzon.pages.event.TickEvent;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
@@ -147,6 +146,53 @@ public abstract class MutableContainer extends MutableElement {
         });
 
         return elements;
+    }
+
+    /**
+     * Finds all direct or indirect children of this {@link MutableContainer} which have the given tag and are an
+     * instance of the given class.
+     */
+    public <T extends MutableElement> List<T> queryAllElements(String tag, Class<T> clazz) {
+        Objects.requireNonNull(tag);
+        Objects.requireNonNull(clazz);
+
+        List<T> foundElements = new ArrayList<>();
+
+        for (MutableElement element : getChildren()) {
+            if (Objects.equals(element.getTag(), tag) && clazz.isAssignableFrom(element.getClass())) {
+                //noinspection unchecked
+                foundElements.add((T) element);
+            }
+
+            if (element instanceof MutableContainer) {
+                foundElements.addAll(((MutableContainer) element).queryAllElements(tag, clazz));
+            }
+        }
+
+        return foundElements;
+    }
+
+    /**
+     * Finds the first direct or indirect child of this {@link MutableContainer} which has the given tag and is an
+     * instance of the given class.
+     */
+    public <T extends MutableElement> Optional<T> queryElement(String tag, Class<T> clazz) {
+        Objects.requireNonNull(tag);
+        Objects.requireNonNull(clazz);
+
+        for (MutableElement element : getChildren()) {
+            if (Objects.equals(element.getTag(), tag) && clazz.isAssignableFrom(element.getClass())) {
+//                noinspection unchecked
+                return Optional.of((T) element);
+            }
+
+            if (element instanceof MutableContainer) {
+                Optional<T> firstElement = ((MutableContainer) element).queryElement(tag, clazz);
+                if (firstElement.isPresent()) return firstElement;
+            }
+        }
+
+        return Optional.empty();
     }
 
     public Vector2i computeSize() {

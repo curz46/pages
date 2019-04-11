@@ -8,6 +8,7 @@ import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -51,7 +52,11 @@ public class MutableOverlayContainer extends MutableContainer {
                         centerOnX ? centeredPosition.getX() : 0,
                         centerOnY ? centeredPosition.getY() : 0
                     );
-                }
+                },
+                (u, v) -> {
+                    throw new IllegalStateException(String.format("Duplicate key %s", u));
+                },
+                LinkedHashMap::new
             ));
     }
 
