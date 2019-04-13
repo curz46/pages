@@ -34,7 +34,7 @@ public class ImmutableStackingContainer extends ImmutableContainer {
                 parent,
                 margin,
                 tag,
-                zPosition,
+                zIndex,
                 majorAxis,
                 centerOnX,
                 centerOnY,

@@ -43,7 +43,7 @@ public class ImmutableRatioContainer extends ImmutableContainer {
                 parent,
                 margin,
                 tag,
-                zPosition,
+                zIndex,
                 majorAxis,
                 centerOnX,
                 centerOnY,

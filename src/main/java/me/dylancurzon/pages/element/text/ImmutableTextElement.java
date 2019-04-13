@@ -19,7 +19,7 @@ public class ImmutableTextElement extends ImmutableElement {
     @Override
     public Function<MutableContainer, MutableElement> asMutable() {
         return parent -> {
-            MutableTextElement element = new MutableTextElement(parent, margin, tag, zPosition, this, decoration);
+            MutableTextElement element = new MutableTextElement(parent, margin, tag, zIndex, this, decoration);
             listeners.forEach(element::subscribe);
             onCreate.forEach(consumer -> consumer.accept(element));
             return element;

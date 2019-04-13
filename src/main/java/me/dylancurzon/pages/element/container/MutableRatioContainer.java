@@ -21,7 +21,7 @@ public class MutableRatioContainer extends MutableContainer {
     public MutableRatioContainer(@Nullable MutableContainer parent,
                                  Spacing margin,
                                  @Nullable String tag,
-                                 @Nullable Integer zPosition,
+                                 @Nullable Integer zIndex,
                                  @Nullable Axis majorAxis,
                                  boolean centerOnX,
                                  boolean centerOnY,
@@ -29,7 +29,7 @@ public class MutableRatioContainer extends MutableContainer {
                                  @Nullable Vector2i minimumSize,
                                  @Nullable Vector2i maximumSize,
                                  ElementDecoration decoration) {
-        super(parent, margin, tag, zPosition, fixedSize, minimumSize, maximumSize, decoration);
+        super(parent, margin, tag, zIndex, fixedSize, minimumSize, maximumSize, decoration);
 
         if (fixedSize == null) {
             throw new IllegalArgumentException("fixedSize not defined on a RatioContainer: " + this);

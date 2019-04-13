@@ -16,7 +16,7 @@ public abstract class MutableElement extends QueuingEventBus {
     protected final Spacing margin;
     @Nullable
     protected final String tag;
-    protected int zPosition;
+    protected int zIndex;
 
     @Nullable
     protected MutableContainer parent;
@@ -30,20 +30,20 @@ public abstract class MutableElement extends QueuingEventBus {
     protected MutableElement(@Nullable MutableContainer parent,
                              Spacing margin,
                              @Nullable String tag,
-                             @Nullable Integer zPosition,
+                             @Nullable Integer zIndex,
                              ElementDecoration decoration) {
         this.margin = Objects.requireNonNull(margin);
         this.tag = tag;
 
-        if (zPosition == null) {
+        if (zIndex == null) {
             if (parent == null) {
                 throw new IllegalArgumentException("if no parent specified, must provide a Z position");
             }
 
             // Add one to parent by default
-            this.zPosition = parent.getZ() + 1;
+            this.zIndex = parent.getZIndex() + 1;
         } else {
-            this.zPosition = zPosition;
+            this.zIndex = zIndex;
 
         }
 
@@ -185,8 +185,8 @@ public abstract class MutableElement extends QueuingEventBus {
         return tag;
     }
 
-    public int getZ() {
-        return zPosition;
+    public int getZIndex() {
+        return zIndex;
     }
 
     public ElementDecoration getDecoration() {

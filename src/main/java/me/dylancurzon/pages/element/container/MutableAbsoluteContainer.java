@@ -15,12 +15,12 @@ public class MutableAbsoluteContainer extends MutableContainer {
     public MutableAbsoluteContainer(@Nullable MutableContainer parent,
                                     Spacing margin,
                                     @Nullable String tag,
-                                    @Nullable Integer zPosition,
+                                    @Nullable Integer zIndex,
                                     @Nullable Vector2i fixedSize,
                                     @Nullable Vector2i minimumSize,
                                     @Nullable Vector2i maximumSize,
                                     ElementDecoration decoration) {
-        super(parent, margin, tag, zPosition, fixedSize, minimumSize, maximumSize, decoration);
+        super(parent, margin, tag, zIndex, fixedSize, minimumSize, maximumSize, decoration);
         positions = Map.of();
     }
 

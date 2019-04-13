@@ -18,7 +18,7 @@ public abstract class ImmutableElement {
     @Nullable
     protected final String tag;
     @Nullable
-    protected final Integer zPosition;
+    protected final Integer zIndex;
 
     protected final ElementDecoration decoration;
 
@@ -32,7 +32,7 @@ public abstract class ImmutableElement {
             margin = builder.margin;
         }
         tag = builder.tag;
-        zPosition = builder.zPosition;
+        zIndex = builder.zIndex;
         decoration = Objects.requireNonNull(builder.decoration);
 
         listeners = new HashSet<>(builder.listeners);
@@ -68,7 +68,7 @@ public abstract class ImmutableElement {
         protected Set<EventListener> listeners = new HashSet<>();
         protected Set<Consumer<M>> onCreate = new HashSet<>();
         protected String tag;
-        protected Integer zPosition;
+        protected Integer zIndex;
         protected ElementDecoration decoration = ElementDecoration.empty();
 
         public B setMargin(Spacing margin) {
@@ -81,8 +81,8 @@ public abstract class ImmutableElement {
             return self();
         }
 
-        public B setZ(Integer zPosition) {
-            this.zPosition = zPosition;
+        public B setZIndex(Integer zIndex) {
+            this.zIndex = zIndex;
             return self();
         }
 

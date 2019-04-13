@@ -23,7 +23,7 @@ public class ImmutableSpriteElement extends ImmutableElement {
     @Override
     public Function<MutableContainer, MutableElement> asMutable() {
         return parent -> {
-            MutableSpriteElement element = new MutableSpriteElement(parent, margin, tag, zPosition, sprite, decoration);
+            MutableSpriteElement element = new MutableSpriteElement(parent, margin, tag, zIndex, sprite, decoration);
             listeners.forEach(element::subscribe);
             onCreate.forEach(consumer -> consumer.accept(element));
             return element;

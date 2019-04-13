@@ -32,7 +32,7 @@ public class ImmutableOverlayContainer extends ImmutableContainer {
                 parent,
                 margin,
                 tag,
-                zPosition,
+                zIndex,
                 centerOnX,
                 centerOnY,
                 fixedSize,

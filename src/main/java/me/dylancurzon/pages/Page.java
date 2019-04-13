@@ -17,7 +17,7 @@ public class Page extends MutableStackingContainer {
 
     public Page(Spacing margin,
                 @Nullable String tag,
-                @Nullable Integer zPosition,
+                @Nullable Integer zIndex,
                 @Nullable Axis majorAxis,
                 boolean centerOnX,
                 boolean centerOnY,
@@ -27,7 +27,7 @@ public class Page extends MutableStackingContainer {
             null,
             margin,
             tag,
-            zPosition == null ? 0 : zPosition,
+            zIndex == null ? 0 : zIndex,
             majorAxis == null ? Axis.VERTICAL : majorAxis,
             centerOnX,
             centerOnY,

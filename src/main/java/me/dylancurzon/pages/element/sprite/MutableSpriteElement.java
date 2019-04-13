@@ -15,10 +15,10 @@ public class MutableSpriteElement extends MutableElement {
     public MutableSpriteElement(@Nullable MutableContainer parent,
                                 Spacing margin,
                                 @Nullable String tag,
-                                @Nullable Integer zPosition,
+                                @Nullable Integer zIndex,
                                 Sprite sprite,
                                 ElementDecoration decoration) {
-        super(parent, margin, tag, zPosition, decoration);
+        super(parent, margin, tag, zIndex, decoration);
         this.sprite = sprite;
     }
 

@@ -26,12 +26,12 @@ public abstract class MutableContainer extends MutableElement {
     public MutableContainer(@Nullable MutableContainer parent,
                             Spacing margin,
                             @Nullable String tag,
-                            @Nullable Integer zPosition,
+                            @Nullable Integer zIndex,
                             @Nullable Vector2i fixedSize,
                             @Nullable Vector2i minimumSize,
                             @Nullable Vector2i maximumSize,
                             ElementDecoration decoration) {
-        super(parent, margin, tag, zPosition, decoration);
+        super(parent, margin, tag, zIndex, decoration);
 
         // Since it's not possible for there to be any children at this point, don't do this
 //        positions = computePositions();
