@@ -27,11 +27,12 @@ public abstract class MutableContainer extends MutableElement {
                             Spacing margin,
                             @Nullable String tag,
                             @Nullable Integer zIndex,
+                            boolean visible,
                             @Nullable Vector2i fixedSize,
                             @Nullable Vector2i minimumSize,
                             @Nullable Vector2i maximumSize,
                             ElementDecoration decoration) {
-        super(parent, margin, tag, zIndex, decoration);
+        super(parent, margin, tag, zIndex, visible, decoration);
 
         // Since it's not possible for there to be any children at this point, don't do this
 //        positions = computePositions();

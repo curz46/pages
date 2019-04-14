@@ -17,6 +17,7 @@ public abstract class MutableElement extends QueuingEventBus {
     @Nullable
     protected final String tag;
     protected int zIndex;
+    protected boolean visible;
 
     @Nullable
     protected MutableContainer parent;
@@ -31,6 +32,7 @@ public abstract class MutableElement extends QueuingEventBus {
                              Spacing margin,
                              @Nullable String tag,
                              @Nullable Integer zIndex,
+                             boolean visible,
                              ElementDecoration decoration) {
         this.margin = Objects.requireNonNull(margin);
         this.tag = tag;
@@ -44,8 +46,8 @@ public abstract class MutableElement extends QueuingEventBus {
             this.zIndex = parent.getZIndex() + 1;
         } else {
             this.zIndex = zIndex;
-
         }
+        this.visible = visible;
 
         this.decoration = Objects.requireNonNull(decoration);
         this.parent = parent;
@@ -140,6 +142,10 @@ public abstract class MutableElement extends QueuingEventBus {
         post(new UpdateEvent());
     }
 
+    public void setDecoration(ElementDecoration decoration) {
+        this.decoration = Objects.requireNonNull(decoration);
+    }
+
     public void setMousePosition(Vector2i mousePosition) {
         boolean previousContains = this.mousePosition != null;
         boolean nowContains = mousePosition != null;
@@ -176,6 +182,10 @@ public abstract class MutableElement extends QueuingEventBus {
         post(new SizeAllocationEvent(allocatedSize), false);
     }
 
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     public Spacing getMargin() {
         return margin;
     }
@@ -191,6 +201,10 @@ public abstract class MutableElement extends QueuingEventBus {
 
     public ElementDecoration getDecoration() {
         return decoration;
+    }
+
+    public boolean isVisible() {
+        return visible && (parent == null || parent.isVisible());
     }
 
     public Vector2i getMarginedSize() {

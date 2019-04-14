@@ -12,12 +12,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class Page extends MutableStackingContainer {
 
-    private Vector2i position;
+    private Vector2i position = Vector2i.of(0, 0);
     private Vector2i mousePosition = null;
 
     public Page(Spacing margin,
                 @Nullable String tag,
                 @Nullable Integer zIndex,
+                boolean visible,
                 @Nullable Axis majorAxis,
                 boolean centerOnX,
                 boolean centerOnY,
@@ -28,6 +29,7 @@ public class Page extends MutableStackingContainer {
             margin,
             tag,
             zIndex == null ? 0 : zIndex,
+            visible,
             majorAxis == null ? Axis.VERTICAL : majorAxis,
             centerOnX,
             centerOnY,

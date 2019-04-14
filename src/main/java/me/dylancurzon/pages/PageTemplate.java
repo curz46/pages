@@ -22,7 +22,7 @@ public class PageTemplate extends ImmutableStackingContainer {
     // TODO: Maybe this shouldn't be public?
     public Function<MutableContainer, MutableElement> asMutable() {
         return parent -> {
-            Page page = new Page(margin, tag, zIndex, majorAxis, centerOnX, centerOnY, fixedSize, decoration);
+            Page page = new Page(margin, tag, zIndex, visible, majorAxis, centerOnX, centerOnY, fixedSize, decoration);
             List<MutableElement> mutableChildren = children.stream()
                 .map(element -> element.asMutable(page))
                 .collect(Collectors.toList());

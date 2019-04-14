@@ -17,9 +17,10 @@ public class MutableTextElement extends MutableElement {
                               Spacing margin,
                               @Nullable String tag,
                               @Nullable Integer zIndex,
+                              boolean visible,
                               ImmutableTextElement immutableElement,
                               ElementDecoration decoration) {
-        super(parent, margin, tag, zIndex, decoration);
+        super(parent, margin, tag, zIndex, visible, decoration);
         this.immutableElement = immutableElement;
         sprite = this.immutableElement.getSprite();
     }

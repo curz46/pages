@@ -24,13 +24,14 @@ public class MutableOverlayContainer extends MutableContainer {
                                     Spacing margin,
                                     @Nullable String tag,
                                     @Nullable Integer zIndex,
+                                    boolean visible,
                                     boolean centerOnX,
                                     boolean centerOnY,
                                     @Nullable Vector2i fixedSize,
                                     @Nullable Vector2i minimumSize,
                                     @Nullable Vector2i maximumSize,
                                     ElementDecoration decoration) {
-        super(parent, margin, tag, zIndex, fixedSize, minimumSize, maximumSize, decoration);
+        super(parent, margin, tag, zIndex, visible, fixedSize, minimumSize, maximumSize, decoration);
         this.centerOnX = centerOnX;
         this.centerOnY = centerOnY;
     }

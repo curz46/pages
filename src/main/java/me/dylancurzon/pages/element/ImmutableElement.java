@@ -19,6 +19,7 @@ public abstract class ImmutableElement {
     protected final String tag;
     @Nullable
     protected final Integer zIndex;
+    protected final boolean visible;
 
     protected final ElementDecoration decoration;
 
@@ -34,6 +35,7 @@ public abstract class ImmutableElement {
         tag = builder.tag;
         zIndex = builder.zIndex;
         decoration = Objects.requireNonNull(builder.decoration);
+        visible = builder.visible;
 
         listeners = new HashSet<>(builder.listeners);
         onCreate = new HashSet<>(builder.onCreate);
@@ -70,6 +72,7 @@ public abstract class ImmutableElement {
         protected String tag;
         protected Integer zIndex;
         protected ElementDecoration decoration = ElementDecoration.empty();
+        protected boolean visible = true;
 
         public B setMargin(Spacing margin) {
             this.margin = margin;
@@ -88,6 +91,11 @@ public abstract class ImmutableElement {
 
         public B setDecoration(ElementDecoration decoration) {
             this.decoration = decoration;
+            return self();
+        }
+
+        public B setVisible(boolean visible) {
+            this.visible = visible;
             return self();
         }
 

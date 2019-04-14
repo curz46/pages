@@ -38,6 +38,7 @@ public class ImmutableAbsoluteContainer extends ImmutableContainer {
                 margin,
                 tag,
                 zIndex,
+                visible,
                 fixedSize,
                 minimumSize,
                 maximumSize,
