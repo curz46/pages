@@ -6,9 +6,9 @@ import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MutableAbsoluteContainer extends MutableContainer {
 
@@ -20,8 +20,9 @@ public class MutableAbsoluteContainer extends MutableContainer {
                                     @Nullable Vector2i fixedSize,
                                     @Nullable Vector2i minimumSize,
                                     @Nullable Vector2i maximumSize,
+                                    Axis majorAxis,
                                     ElementDecoration decoration) {
-        super(parent, margin, tag, zIndex, visible, fixedSize, minimumSize, maximumSize, decoration);
+        super(parent, margin, tag, zIndex, visible, fixedSize, minimumSize, maximumSize, majorAxis, decoration);
         positions = Map.of();
     }
 
@@ -37,7 +38,16 @@ public class MutableAbsoluteContainer extends MutableContainer {
         }
 
         // Positions in an AbsoluteMutableContainer are not computed, they are provided.
-        return positions;
+        // However, offset should still be respected
+        return positions.entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().add(Vector2i.of(offsetX, offsetY)),
+                (u, v) -> {
+                    throw new IllegalStateException(String.format("Duplicate key %s", u));
+                },
+                LinkedHashMap::new
+            ));
     }
 
     public Map<MutableElement, Vector2i> getPositions() {

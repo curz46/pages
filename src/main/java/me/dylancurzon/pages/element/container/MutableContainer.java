@@ -3,6 +3,7 @@ package me.dylancurzon.pages.element.container;
 import me.dylancurzon.pages.element.ElementDecoration;
 import me.dylancurzon.pages.element.MutableElement;
 import me.dylancurzon.pages.event.MouseClickEvent;
+import me.dylancurzon.pages.event.MouseScrollEvent;
 import me.dylancurzon.pages.util.Spacing;
 import me.dylancurzon.pages.util.Vector2i;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +15,7 @@ public abstract class MutableContainer extends MutableElement {
 //    protected final List<MutableElement> children = new ArrayList<>();
 
     protected Vector2i size;
+    protected Vector2i unboundedSize;
     protected Map<MutableElement, Vector2i> positions;
 
     @Nullable
@@ -22,6 +24,10 @@ public abstract class MutableContainer extends MutableElement {
     protected Vector2i minimumSize;
     @Nullable
     protected Vector2i maximumSize;
+    protected Axis majorAxis;
+
+    protected int offsetX = 0;
+    protected int offsetY = 0;
 
     public MutableContainer(@Nullable MutableContainer parent,
                             Spacing margin,
@@ -31,6 +37,7 @@ public abstract class MutableContainer extends MutableElement {
                             @Nullable Vector2i fixedSize,
                             @Nullable Vector2i minimumSize,
                             @Nullable Vector2i maximumSize,
+                            Axis majorAxis,
                             ElementDecoration decoration) {
         super(parent, margin, tag, zIndex, visible, decoration);
 
@@ -40,6 +47,7 @@ public abstract class MutableContainer extends MutableElement {
         this.fixedSize = fixedSize;
         this.minimumSize = minimumSize;
         this.maximumSize = maximumSize;
+        this.majorAxis = Objects.requireNonNull(majorAxis);
 
         // Whenever this MutableContainer is clicked on, determine whether or not the event should be transferred to
         // this container's children
@@ -65,10 +73,20 @@ public abstract class MutableContainer extends MutableElement {
             });
         });
 
+        doOnScroll(event -> {
+            for (MutableElement child : getChildren()) {
+                if (child.getMousePosition() == null) {
+                    // Only emit scroll on child if the mouse is currently above it
+                    continue;
+                }
+                child.post(event);
+            }
+        });
+
         // Whenever this MutableContainer is "ticked", forward it
         doOnTick(event -> {
-            for (MutableElement element : getChildren()) {
-                element.post(event);
+            for (MutableElement child : getChildren()) {
+                child.post(event);
             }
         });
     }
@@ -119,17 +137,26 @@ public abstract class MutableContainer extends MutableElement {
 
     public void setFixedSize(Vector2i fixedSize) {
         this.fixedSize = fixedSize;
-        propagateUpdate();
     }
 
     public void setMinimumSize(Vector2i minimumSize) {
         this.minimumSize = minimumSize;
-        propagateUpdate();
     }
 
     public void setMaximumSize(Vector2i maximumSize) {
         this.maximumSize = maximumSize;
-        propagateUpdate();
+    }
+
+    public void setMajorAxis(Axis majorAxis) {
+        this.majorAxis = Objects.requireNonNull(majorAxis);
+    }
+
+    public void setOffsetX(int offsetX) {
+        this.offsetX = offsetX;
+    }
+
+    public void setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
     }
 
     public Map<MutableElement, Vector2i> flatten() {
@@ -202,32 +229,7 @@ public abstract class MutableContainer extends MutableElement {
             return fixedSize;
         }
 
-        // The goal of size computation is merely to act on the generated positions of this.computePositions()
-        // The only way that this Container can expand is rightwards and downwards, so just a case
-        // of finding the maximum displacement of an Element's upper bound on an axis
-        Vector2i size = Vector2i.of(0, 0);
-
-        for (Map.Entry<MutableElement, Vector2i> elementEntry : positions.entrySet()) {
-            MutableElement childElement = elementEntry.getKey();
-            Vector2i childPosition = elementEntry.getValue();
-
-            Vector2i childSize = childElement.getSize();
-            Spacing childMargin = childElement.getMargin();
-            // Only need to account for right + bottom Margin, since the rest should be accounted for by the position
-            // already
-            Vector2i childUpperBound = Vector2i.of(
-                childPosition.getX() + childSize.getX() + childMargin.getRight(),
-                childPosition.getY() + childSize.getY() + childMargin.getTop()
-            );
-
-            // If greater than the current size, then size increase to contain this Element
-            if (size.getX() < childUpperBound.getX()) {
-                size = size.setX(childUpperBound.getX());
-            }
-            if (size.getY() < childUpperBound.getY()) {
-                size = size.setY(childUpperBound.getY());
-            }
-        }
+        Vector2i size = computeUnboundedSize();
 
         if (minimumSize != null) {
             if (size.getX() < minimumSize.getX()) {
@@ -249,6 +251,37 @@ public abstract class MutableContainer extends MutableElement {
         return size;
     }
 
+    public Vector2i computeUnboundedSize() {
+        // The goal of size computation is merely to act on the generated positions of this.computePositions()
+        // The only way that this Container can expand is rightwards and downwards, so just a case
+        // of finding the maximum displacement of an Element's upper bound on an axis
+        Vector2i unboundedSize = Vector2i.of(0, 0);
+
+        for (Map.Entry<MutableElement, Vector2i> elementEntry : positions.entrySet()) {
+            MutableElement childElement = elementEntry.getKey();
+            Vector2i childPosition = elementEntry.getValue();
+
+            Vector2i childSize = childElement.getSize();
+            Spacing childMargin = childElement.getMargin();
+            // Only need to account for right + bottom Margin, since the rest should be accounted for by the position
+            // already
+            Vector2i childUpperBound = Vector2i.of(
+                childPosition.getX() + childSize.getX() + childMargin.getRight(),
+                childPosition.getY() + childSize.getY() + childMargin.getTop()
+            );
+
+            // If greater than the current size, then size increase to contain this Element
+            if (unboundedSize.getX() < childUpperBound.getX()) {
+                unboundedSize = unboundedSize.setX(childUpperBound.getX());
+            }
+            if (unboundedSize.getY() < childUpperBound.getY()) {
+                unboundedSize = unboundedSize.setY(childUpperBound.getY());
+            }
+        }
+
+        return unboundedSize;
+    }
+
     /**
      * @return A map of each MutableElement (in {@link this#getChildren()} and its calculated position. It should factor in
      * if the {@link MutableContainer} is inline, padded and respects each MutableElement's margin.
@@ -266,10 +299,50 @@ public abstract class MutableContainer extends MutableElement {
 
     @Override
     public Vector2i getSize() {
-        if (size == null) {
-            size = computeSize();
+        if (size != null) {
+            return size;
         }
+
+        if (fixedSize != null) {
+            size = fixedSize;
+            return size;
+        }
+
+        unboundedSize = getUnboundedSize();
+        size = unboundedSize;
+
+        if (minimumSize != null) {
+            if (size.getX() < minimumSize.getX()) {
+                size = size.setX(minimumSize.getX());
+            }
+            if (size.getY() < minimumSize.getY()) {
+                size = size.setY(minimumSize.getY());
+            }
+        }
+
+        if (maximumSize != null) {
+            if (size.getX() > maximumSize.getX()) {
+                size = size.setX(maximumSize.getX());
+            }
+            if (size.getY() > maximumSize.getY()) {
+                size = size.setY(maximumSize.getY());
+            }
+        }
+
         return size;
+    }
+
+    /**
+     * @return The size of this container if there were no restrictions on its size by {@link this#fixedSize},
+     * {@link this#minimumSize} or {@link this#maximumSize}. For some containers where {@link this#fixedSize} is a
+     * required attribute, this will be equivalent to {@link this#size}. Otherwise, it will be determined by the
+     * extreme positions of the children of this container.
+     */
+    public Vector2i getUnboundedSize() {
+        if (unboundedSize == null) {
+            unboundedSize = computeUnboundedSize();
+        }
+        return unboundedSize;
     }
 
     public Optional<Vector2i> getFixedSize() {
@@ -282,6 +355,18 @@ public abstract class MutableContainer extends MutableElement {
 
     public Optional<Vector2i> getMaximumSize() {
         return Optional.ofNullable(maximumSize);
+    }
+
+    public Axis getMajorAxis() {
+        return majorAxis;
+    }
+
+    public int getOffsetX() {
+        return offsetX;
+    }
+
+    public int getOffsetY() {
+        return offsetY;
     }
 
 }

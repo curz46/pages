@@ -107,6 +107,14 @@ public abstract class MutableElement extends QueuingEventBus {
     }
 
     /**
+     * Subscribes the given {@link Consumer} to the {@link MouseScrollEvent} on this {@link MutableElement}.
+     * Equivalent to {@code Builder#subscribe(MouseScrollEvent.class, consumer)}.
+     */
+    public void doOnScroll(Consumer<MouseScrollEvent> consumer) {
+        subscribe(MouseScrollEvent.class, consumer);
+    }
+
+    /**
      * Subscribes the given {@link Consumer} to the {@link TickEvent} on this {@link MutableElement}.
      * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
      */
@@ -225,6 +233,7 @@ public abstract class MutableElement extends QueuingEventBus {
         return mousePosition;
     }
 
+    @Nullable
     public MutableContainer getParent() {
         return parent;
     }

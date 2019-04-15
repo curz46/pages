@@ -13,13 +13,11 @@ public class ImmutableRatioContainer extends ImmutableContainer {
 
 //    protected final List<ImmutableElement> children = new ArrayList<>();
     protected final Map<ImmutableElement, Integer> childRatioMap = new LinkedHashMap<>();
-    protected final Axis majorAxis;
     protected final boolean centerOnX;
     protected final boolean centerOnY;
 
     protected ImmutableRatioContainer(Builder builder) {
         super(builder);
-        majorAxis = builder.majorAxis == null ? Axis.VERTICAL : builder.majorAxis;
         centerOnX = builder.centerOnX;
         centerOnY = builder.centerOnY;
     }
@@ -45,12 +43,12 @@ public class ImmutableRatioContainer extends ImmutableContainer {
                 tag,
                 zIndex,
                 visible,
-                majorAxis,
                 centerOnX,
                 centerOnY,
                 fixedSize,
                 minimumSize,
                 maximumSize,
+                majorAxis,
                 decoration
             );
 //            Map<MutableElement, Integer> mutableRatioMap = childRatioMap
@@ -81,7 +79,6 @@ public class ImmutableRatioContainer extends ImmutableContainer {
     public static class Builder extends ImmutableContainer.Builder<ImmutableRatioContainer, Builder, MutableRatioContainer> {
 
         protected final Map<Function<ImmutableRatioContainer, ImmutableElement>, Integer> childFunctionRatioMap = new LinkedHashMap<>();
-        protected Axis majorAxis;
         protected boolean centerOnX;
         protected boolean centerOnY;
 
@@ -93,11 +90,6 @@ public class ImmutableRatioContainer extends ImmutableContainer {
         public Builder add(Function<ImmutableRatioContainer, ImmutableElement> function,
                                                       int ratio) {
             childFunctionRatioMap.put(function, ratio);
-            return self();
-        }
-
-        public Builder setMajorAxis(Axis majorAxis) {
-            this.majorAxis = majorAxis;
             return self();
         }
 

@@ -42,6 +42,7 @@ public class ImmutableAbsoluteContainer extends ImmutableContainer {
                 fixedSize,
                 minimumSize,
                 maximumSize,
+                majorAxis,
                 decoration
             );
             Map<MutableElement, Vector2i> mutablePositions = new LinkedHashMap<>();

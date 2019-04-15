@@ -39,6 +39,7 @@ public class ImmutableOverlayContainer extends ImmutableContainer {
                 fixedSize,
                 minimumSize,
                 maximumSize,
+                majorAxis,
                 decoration
             );
             List<MutableElement> mutableChildren = children.stream()

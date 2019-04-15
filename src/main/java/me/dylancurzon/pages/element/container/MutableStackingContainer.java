@@ -13,8 +13,6 @@ public class MutableStackingContainer extends MutableContainer {
 
     private final List<MutableElement> children = new ArrayList<>();
 
-    // By default, stack elements from top to bottom
-    private Axis majorAxis = Axis.VERTICAL;
     // If a StackingContainer is centering, it will center children on the *minor* axis
     // Note: this *requires* a fixedSize
     private boolean centerOnX;
@@ -32,8 +30,7 @@ public class MutableStackingContainer extends MutableContainer {
                                     @Nullable Vector2i minimumSize,
                                     @Nullable Vector2i maximumSize,
                                     ElementDecoration decoration) {
-        super(parent, margin, tag, zIndex, visible, fixedSize, minimumSize, maximumSize, decoration);
-        if (majorAxis != null) this.majorAxis = majorAxis;
+        super(parent, margin, tag, zIndex, visible, fixedSize, minimumSize, maximumSize, majorAxis, decoration);
         this.centerOnX = centerOnX;
         this.centerOnY = centerOnY;
     }
@@ -60,6 +57,7 @@ public class MutableStackingContainer extends MutableContainer {
                 childElement.getMargin().getTop()
             ));
 
+            Vector2i computedPosition;
             if (centerOnMinor) {
                 if (fixedSize == null) {
                     throw new IllegalStateException(
@@ -74,18 +72,18 @@ public class MutableStackingContainer extends MutableContainer {
                 Vector2i centeringOffset = getSize().div(2) // move to middle
                     .sub(childElement.getMarginedSize().div(2)) // adjust for element width, allow movement with margin
                     .toInt();
-
-                positions.put(
-                    childElement,
-                    marginedPosition.add(
-                        majorAxis == Axis.HORIZONTAL
-                            ? centeringOffset.setX(0) // minorAxis=VERTICAL
-                            : centeringOffset.setY(0) // minorAxis=HORIZONTAL
-                    )
+                computedPosition = marginedPosition.add(
+                    majorAxis == Axis.HORIZONTAL
+                        ? centeringOffset.setX(0) // minorAxis=VERTICAL
+                        : centeringOffset.setY(0) // minorAxis=HORIZONTAL
                 );
             } else {
-                positions.put(childElement, marginedPosition);
+                computedPosition = marginedPosition;
             }
+            // Offset final position by offset values
+            // No need to affect "currentPosition" here since this will happen to all elements *after* position
+            // computation
+            positions.put(childElement, computedPosition.add(Vector2i.of(offsetX, offsetY)));
 
             Vector2i childMarginedSize = childElement.getMarginedSize();
 

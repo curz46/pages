@@ -30,8 +30,9 @@ public class MutableOverlayContainer extends MutableContainer {
                                     @Nullable Vector2i fixedSize,
                                     @Nullable Vector2i minimumSize,
                                     @Nullable Vector2i maximumSize,
+                                    Axis majorAxis,
                                     ElementDecoration decoration) {
-        super(parent, margin, tag, zIndex, visible, fixedSize, minimumSize, maximumSize, decoration);
+        super(parent, margin, tag, zIndex, visible, fixedSize, minimumSize, maximumSize, majorAxis, decoration);
         this.centerOnX = centerOnX;
         this.centerOnY = centerOnY;
     }
@@ -52,7 +53,7 @@ public class MutableOverlayContainer extends MutableContainer {
                     return Vector2i.of(
                         centerOnX ? centeredPosition.getX() : 0,
                         centerOnY ? centeredPosition.getY() : 0
-                    );
+                    ).add(Vector2i.of(offsetX, offsetY));
                 },
                 (u, v) -> {
                     throw new IllegalStateException(String.format("Duplicate key %s", u));

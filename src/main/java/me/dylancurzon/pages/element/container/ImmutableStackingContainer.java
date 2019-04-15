@@ -11,13 +11,11 @@ import java.util.stream.Collectors;
 public class ImmutableStackingContainer extends ImmutableContainer {
 
     protected final List<ImmutableElement> children = new ArrayList<>();
-    protected final Axis majorAxis;
     protected final boolean centerOnX;
     protected final boolean centerOnY;
 
     protected ImmutableStackingContainer(AbstractBuilder builder) {
         super(builder);
-        majorAxis = builder.majorAxis == null ? Axis.VERTICAL : builder.majorAxis;
         centerOnX = builder.centerOnX;
         centerOnY = builder.centerOnY;
 }
@@ -89,7 +87,6 @@ public class ImmutableStackingContainer extends ImmutableContainer {
         M extends MutableStackingContainer> extends ImmutableContainer.Builder<T, B, M> {
 
         protected final List<Function<ImmutableStackingContainer, ImmutableElement>> childrenFunctions = new ArrayList<>();
-        protected Axis majorAxis;
         protected boolean centerOnX;
         protected boolean centerOnY;
 
@@ -122,11 +119,6 @@ public class ImmutableStackingContainer extends ImmutableContainer {
 
         public B setCenterOnY(boolean centerOnY) {
             this.centerOnY = centerOnY;
-            return self();
-        }
-
-        public B setMajorAxis(Axis majorAxis) {
-            this.majorAxis = majorAxis;
             return self();
         }
 

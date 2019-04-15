@@ -163,6 +163,15 @@ public abstract class ImmutableElement {
         }
 
         /**
+         * Equivalent to {@code Builder#subscribe(MouseScrollEvent.class, consumer)}.
+         * @see Builder#subscribe(Class, Consumer)
+         */
+        public B doOnScroll(Consumer<MouseScrollEvent> consumer) {
+            subscribe(MouseScrollEvent.class, consumer);
+            return self();
+        }
+
+        /**
          * Equivalent to {@code Builder#subscribe(TickEvent.class, consumer)}.
          * @see Builder#subscribe(Class, Consumer)
          */

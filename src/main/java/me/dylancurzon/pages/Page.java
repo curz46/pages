@@ -4,6 +4,7 @@ import me.dylancurzon.pages.element.container.Axis;
 import me.dylancurzon.pages.element.ElementDecoration;
 import me.dylancurzon.pages.element.container.MutableStackingContainer;
 import me.dylancurzon.pages.event.MouseClickEvent;
+import me.dylancurzon.pages.event.MouseScrollEvent;
 import me.dylancurzon.pages.event.TickEvent;
 import me.dylancurzon.pages.util.MouseButton;
 import me.dylancurzon.pages.util.Spacing;
@@ -13,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 public class Page extends MutableStackingContainer {
 
     private Vector2i position = Vector2i.of(0, 0);
-    private Vector2i mousePosition = null;
 
     public Page(Spacing margin,
                 @Nullable String tag,
@@ -42,6 +42,10 @@ public class Page extends MutableStackingContainer {
 
     public void click(Vector2i position, MouseButton button) {
         post(new MouseClickEvent(position, button));
+    }
+
+    public void scroll(double offset) {
+        post(new MouseScrollEvent(offset));
     }
 
     public void tick() {

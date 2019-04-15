@@ -13,8 +13,6 @@ public class MutableRatioContainer extends MutableContainer {
 
     private final Map<MutableElement, Integer> childRatioMap = new LinkedHashMap<>();
 
-    // By default, stack elements from top to bottom
-    private Axis majorAxis = Axis.VERTICAL;
     private boolean centerOnX;
     private boolean centerOnY;
 
@@ -23,14 +21,14 @@ public class MutableRatioContainer extends MutableContainer {
                                  @Nullable String tag,
                                  @Nullable Integer zIndex,
                                  boolean visible,
-                                 @Nullable Axis majorAxis,
                                  boolean centerOnX,
                                  boolean centerOnY,
                                  Vector2i fixedSize,
                                  @Nullable Vector2i minimumSize,
                                  @Nullable Vector2i maximumSize,
+                                 Axis majorAxis,
                                  ElementDecoration decoration) {
-        super(parent, margin, tag, zIndex, visible, fixedSize, minimumSize, maximumSize, decoration);
+        super(parent, margin, tag, zIndex, visible, fixedSize, minimumSize, maximumSize, majorAxis, decoration);
 
         if (fixedSize == null) {
             throw new IllegalArgumentException("fixedSize not defined on a RatioContainer: " + this);
@@ -116,7 +114,8 @@ public class MutableRatioContainer extends MutableContainer {
                 );
             }
 
-            positions.put(childElement, elementPosition);
+            // Add offset, but don't add to currentPosition
+            positions.put(childElement, elementPosition.add(Vector2i.of(offsetX, offsetY)));
 
             currentPosition = currentPosition.add(
                 majorAxis == Axis.HORIZONTAL
