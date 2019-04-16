@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static java.lang.Math.*;
+
 public abstract class ImmutableContainer extends ImmutableElement {
 
     /**
@@ -20,6 +22,9 @@ public abstract class ImmutableContainer extends ImmutableElement {
         private final double VELOCITY_OFFSET_FACTOR = 1;
         private final double VELOCITY_FRICTION = 0.1;
         private final double VELOCITY_MINIMUM = 0.05;
+
+        private final double VELOCITY_BOUNCE_FACTOR = 0.05;
+        private final double VELOCITY_BOUNCE_FRICTION = 0.5;
         // Store a copy of the majorOffset as a double so that we're more accurate
         private double majorOffset = 0.0;
         private double velocity = 0.0;
@@ -29,13 +34,31 @@ public abstract class ImmutableContainer extends ImmutableElement {
             if (velocity == 0) return;
 
             majorOffset += velocity;
-            velocity *= (1.0 - VELOCITY_FRICTION);
-            if (Math.abs(velocity) < VELOCITY_MINIMUM) {
+
+            // Add "bounce back" effect
+            double minimumBoundDelta = -majorOffset;
+            Vector2i boundedSize = container.getSize();
+            Vector2i unboundedSize = container.getUnboundedSize();
+            Vector2i maximumOffset = boundedSize.sub(unboundedSize);
+            int maximumValue = container.getMajorAxis() == Axis.VERTICAL
+                ? maximumOffset.getY()
+                : maximumOffset.getX();
+            double maximumBoundDelta = majorOffset - maximumValue;
+            if (minimumBoundDelta < 0 || maximumBoundDelta < 0) {
+                if (abs(minimumBoundDelta) < abs(maximumBoundDelta)) {
+                    velocity += minimumBoundDelta * VELOCITY_BOUNCE_FACTOR;
+                } else {
+                    velocity -= maximumBoundDelta * VELOCITY_BOUNCE_FACTOR;
+                }
+                velocity *= (1.0 - VELOCITY_BOUNCE_FRICTION);
+            } else {
+                velocity *= (1.0 - VELOCITY_FRICTION);
+            }
+
+            if (abs(velocity) < VELOCITY_MINIMUM) {
                 // Set to zero when we reach the minimum so that we eventually completely stop scrolling
                 velocity = 0;
             }
-
-            // TODO: Add "bounce back" effect
 
             // Update container majorOffset
             if (container.getMajorAxis() == Axis.VERTICAL) {
@@ -45,7 +68,7 @@ public abstract class ImmutableContainer extends ImmutableElement {
             }
             // TODO: Calling this every tick means any rendering implementation will have to work very hard to render a
             //       scrolling container. The only real way to fix this is partial updates, so rendering impl.s can
-            //       only update what has changed.
+            //       update only what has changed.
             container.propagateUpdate();
         }
 
