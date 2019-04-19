@@ -173,6 +173,8 @@ public abstract class MutableContainer extends MutableElement {
             elements.put(element, position);
         });
 
+        elements.put(this, Vector2i.of(0, 0));
+
         return elements;
     }
 
