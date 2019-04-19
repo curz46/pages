@@ -23,16 +23,14 @@ public abstract class ImmutableContainer extends ImmutableElement {
         private final double VELOCITY_FRICTION = 0.1;
         private final double VELOCITY_MINIMUM = 0.05;
 
-        private final double VELOCITY_BOUNCE_FACTOR = 0.05;
-        private final double VELOCITY_BOUNCE_FRICTION = 0.5;
+        private final double VELOCITY_BOUNCE_FACTOR = 0.02;
+        private final double VELOCITY_BOUNCE_FRICTION = 0.3;
         // Store a copy of the majorOffset as a double so that we're more accurate
         private double majorOffset = 0.0;
         private double velocity = 0.0;
 
         @Override
         public void tick() {
-            if (velocity == 0) return;
-
             majorOffset += velocity;
 
             // Add "bounce back" effect
@@ -58,6 +56,14 @@ public abstract class ImmutableContainer extends ImmutableElement {
             if (abs(velocity) < VELOCITY_MINIMUM) {
                 // Set to zero when we reach the minimum so that we eventually completely stop scrolling
                 velocity = 0;
+            }
+
+            int currentMajorOffset = container.getMajorAxis() == Axis.VERTICAL
+                ? container.getOffsetY()
+                : container.getOffsetX();
+            if (Math.round(majorOffset) == currentMajorOffset) {
+                // There was no change in the offset, so don't trigger an unnecessary update
+                return;
             }
 
             // Update container majorOffset
