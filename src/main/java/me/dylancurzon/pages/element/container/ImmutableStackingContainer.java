@@ -18,7 +18,7 @@ public class ImmutableStackingContainer extends ImmutableContainer {
         super(builder);
         centerOnX = builder.centerOnX;
         centerOnY = builder.centerOnY;
-}
+    }
 
     @Override
     public List<ImmutableElement> getChildren() {

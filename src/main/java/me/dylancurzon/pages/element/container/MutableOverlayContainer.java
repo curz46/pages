@@ -41,19 +41,25 @@ public class MutableOverlayContainer extends MutableContainer {
     protected Map<MutableElement, Vector2i> computePositions() {
         // Set the allocated size for all elements
         for (MutableElement element : children) {
-            element.setAllocatedSize(getSize());
+            element.setAllocatedSize(element.getMarginedSize());
         }
 
-        Vector2d midpoint = getSize().div(2);
+        if ((centerOnX || centerOnY) && fixedSize == null) {
+            throw new IllegalStateException("Cannot be centering when fixedSize=null!");
+        }
+        Vector2d midpoint = fixedSize == null ? null : getSize().div(2);
         return children.stream()
             .collect(Collectors.toMap(
                 Function.identity(),
                 child -> {
-                    Vector2i centeredPosition = midpoint.sub(child.getSize().div(2)).toInt();
+                    Vector2i centeredPosition = midpoint == null ? null : midpoint.sub(child.getSize().div(2)).toInt();
                     return Vector2i.of(
                         centerOnX ? centeredPosition.getX() : 0,
-                        centerOnY ? centeredPosition.getY() : 0
-                    ).add(Vector2i.of(offsetX, offsetY));
+                        centerOnY ? centeredPosition.getY() : 0)
+                        .add(Vector2i.of(offsetX, offsetY))
+                        .add(Vector2i.of(
+                            child.getMargin().getLeft(),
+                            child.getMargin().getTop()));
                 },
                 (u, v) -> {
                     throw new IllegalStateException(String.format("Duplicate key %s", u));

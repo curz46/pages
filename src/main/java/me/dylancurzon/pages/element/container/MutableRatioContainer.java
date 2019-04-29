@@ -115,7 +115,9 @@ public class MutableRatioContainer extends MutableContainer {
             }
 
             // Add offset, but don't add to currentPosition
-            positions.put(childElement, elementPosition.add(Vector2i.of(offsetX, offsetY)));
+            positions.put(childElement, elementPosition
+                .add(Vector2i.of(childElement.getMargin().getLeft(), childElement.getMargin().getTop()))
+                .add(Vector2i.of(offsetX, offsetY)));
 
             currentPosition = currentPosition.add(
                 majorAxis == Axis.HORIZONTAL
